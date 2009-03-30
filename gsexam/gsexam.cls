@@ -29,7 +29,7 @@
 \ProcessOptions
 
 \if@answers
-  \includecomment{answer}
+  \specialcomment{answer}{\begingroup\itshape\par}{\endgroup}
 \else
   \excludecomment{answer}
 \fi
