@@ -91,15 +91,27 @@
 \renewcommand{\theenumii}{\alph{enumi}.(\roman{enumii})}
 \newcommand{\labelenumii}{\roman{enumii}.}
 
-\newenvironment{question}[1][]{
+\newcounter{question}
+\newcounter{qmarks}[question]
+\newcommand{\qmarks}[1]{\unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}\addtocounter{qmarks}{#1}}
+
+\newenvironment{question}[2][]{
   \clearpage
-  \addtocounter{question}{1}
+  \def\qm@rks{#2}
+  \stepcounter{question}
   \begin{trivlist}
     \item[\bfseries Question \arabic{question}] {~#1}
       \begin{enumerate}
   }
-  {\end{enumerate}\end{trivlist}}
-\newcounter{question}
+  {\end{enumerate}\end{trivlist}%
+\ifnum\qm@rks=\value{qmarks}
+\else
+\typeout{Mark mismatch in question \arabic{question}: expected \qm@rks, got \arabic{qmarks}}
+\centering 
+This question has a mark count mismatch: expected \textbf{\qm@rks},
+got \textbf{\arabic{qmarks}}.
+
+\fi}
 
 \setlength{\leftmargini}{2.5em}
 \setlength{\leftmarginii}{1.4em}
