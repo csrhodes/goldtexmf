@@ -28,6 +28,12 @@
 
 \ProcessOptions
 
+% Bug: since comment is based on verbatim, this only works
+% if \begin{answer} and \end{answer} are the first things on their
+% respective lines
+%
+% FIXME: find the bit in aucTeX that handles \begin{verbatim}
+% specially, and copy it.
 \if@answers
   \specialcomment{answer}{\begingroup\itshape\par}{\endgroup}
 \else
@@ -72,6 +78,13 @@
     \hrule\par\vskip12pt\relax}}
   {\global\@examendtrue}
 
+% Bug: these definitions have global scope.  It would be much nicer
+% to have them only be like this within \begin{bcsexam}
+%   .. \end{bcsexam} so that inclusion of an exam paper in another
+% document doesn't make all the numbering screwy.  Since this is a
+% class not a style, that doesn't matter so much, but it will matter
+% once the style based on this class is implemented.
+%
 % FIXME: find out how to make these have local scope
 \renewcommand{\theenumi}{(\alph{enumi})}
 \newcommand{\labelenumi}{\theenumi}
