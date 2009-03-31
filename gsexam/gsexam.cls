@@ -20,6 +20,11 @@
 \DeclareOption{answers}{\@answerstrue}
 \DeclareOption{noanswers}{\@answersfalse}
 
+\newif\if@checked
+\@checkedtrue
+
+\DeclareOption{unchecked}{\@checkedfalse}
+
 \IfSubStringInString{\detokenize{answers}}{\jobname}{\@answerstrue}{\@answersfalse}
 
 \newif\if@practical
@@ -106,10 +111,12 @@
   {\end{enumerate}\end{trivlist}%
 \ifnum\qm@rks=\value{qmarks}
 \else
-\typeout{Mark mismatch in question \arabic{question}: expected \qm@rks, got \arabic{qmarks}}
-\centering 
-This question has a mark count mismatch: expected \textbf{\qm@rks},
-got \textbf{\arabic{qmarks}}.
+  \if@checked
+  \typeout{Mark mismatch in question \arabic{question}: expected \qm@rks, got \arabic{qmarks}}
+  \centering 
+  This question has a mark count mismatch: expected \textbf{\qm@rks},
+  got \textbf{\arabic{qmarks}}.
+  \fi
 
 \fi}
 
