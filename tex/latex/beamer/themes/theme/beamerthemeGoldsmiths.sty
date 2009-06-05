@@ -1,3 +1,5 @@
+\ProvidesPackageRCS $Header: /cvsroot/latex-beamer/latex-beamer/themes/theme/beamerthemeGoldsmiths.sty,v 1.11 2007/01/28 20:48:30 tantau Exp $
+
 \DeclareOptionBeamer{width}
 {\PassOptionsToPackage{width=#1}{beamerouterthemelogosidebar}}
 
@@ -11,8 +13,8 @@
 
 \mode<presentation>
 
-\useoutertheme[height=10pt,right]{sidebar}
 \usecolortheme{gold}
+\useoutertheme[height=0pt,left]{logosidebar}
 \setbeamercolor*{titlelike}{parent=structure}
 \useinnertheme{circles}
 \setbeamertemplate{frametitle}[default][right]

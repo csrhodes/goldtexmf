@@ -7,6 +7,8 @@
 %
 % See the file doc/licenses/LICENSE for more details.
 
+\ProvidesPackageRCS $Header: /cvsroot/latex-beamer/latex-beamer/themes/color/beamercolorthemegold.sty,v 1.9 2007/01/28 20:48:24 tantau Exp $
+
 \mode<presentation>
 
 \definecolor{goldyellow}{RGB}{187,155,98}
@@ -19,6 +21,7 @@
 \setbeamercolor{palette tertiary}{fg=goldblue,bg=white!90!goldyellow}
 \setbeamercolor{palette quaternary}{fg=goldyellow,bg=white!90!goldyellow}
 
+\setbeamercolor{title}{parent=palette quaternary}
 \setbeamercolor{titlelike}{parent=palette quaternary}
 
 \setbeamercolor{block title}{fg=goldblue,bg=goldyellow}
@@ -30,7 +33,9 @@
 \setbeamercolor{block body example}{parent=normal text,use=block title example,bg=block title example.bg!25!bg}
 
 \setbeamercolor{sidebar}{bg=white!90!goldyellow}
-  
+\setbeamercolor{frametitle}{bg=white!90!goldyellow}
+\setbeamercolor{framesubtitle}{bg=white!90!goldyellow}
+
 \setbeamercolor{palette sidebar primary}{fg=goldblue}
 \setbeamercolor{palette sidebar secondary}{fg=goldblue!75}
 \setbeamercolor{palette sidebar tertiary}{fg=goldblue!75}
