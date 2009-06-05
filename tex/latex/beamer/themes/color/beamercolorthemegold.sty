@@ -1,0 +1,43 @@
+% Copyright 2007 by Till Tantau
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+% See the file doc/licenses/LICENSE for more details.
+
+\mode<presentation>
+
+\definecolor{goldyellow}{RGB}{187,155,98}
+\definecolor{goldblue}{RGB}{108,114,138}
+
+\setbeamercolor{structure}{fg=goldblue}
+
+\setbeamercolor{palette primary}{fg=goldblue,bg=white!90!goldyellow}
+\setbeamercolor{palette secondary}{fg=goldblue,bg=white!90!goldyellow}
+\setbeamercolor{palette tertiary}{fg=goldblue,bg=white!90!goldyellow}
+\setbeamercolor{palette quaternary}{fg=goldyellow,bg=white!90!goldyellow}
+
+\setbeamercolor{titlelike}{parent=palette quaternary}
+
+\setbeamercolor{block title}{fg=goldblue,bg=goldyellow}
+\setbeamercolor{block title alerted}{use=alerted text,fg=goldblue,bg=alerted text.fg!75!bg}
+\setbeamercolor{block title example}{use=example text,fg=goldblue,bg=example text.fg!75!bg}
+
+\setbeamercolor{block body}{parent=normal text,use=block title,bg=block title.bg!25!bg}
+\setbeamercolor{block body alerted}{parent=normal text,use=block title alerted,bg=block title alerted.bg!25!bg}
+\setbeamercolor{block body example}{parent=normal text,use=block title example,bg=block title example.bg!25!bg}
+
+\setbeamercolor{sidebar}{bg=white!90!goldyellow}
+  
+\setbeamercolor{palette sidebar primary}{fg=goldblue}
+\setbeamercolor{palette sidebar secondary}{fg=goldblue!75}
+\setbeamercolor{palette sidebar tertiary}{fg=goldblue!75}
+\setbeamercolor{palette sidebar quaternary}{fg=goldblue}
+
+\setbeamercolor*{separation line}{}
+\setbeamercolor*{fine separation line}{}
+
+\mode
+<all>
