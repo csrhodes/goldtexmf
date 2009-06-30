@@ -42,6 +42,14 @@
   \else%
     \edef\@to{#1}%
   \fi}
+\newcommand{\attach}[1]{%
+  \ifdefined\@attach%
+    \edef\@attach{\@attach\par{#1}}%
+    \edef\@attachname{Attachments}%
+  \else%
+    \edef\@attach{#1}%
+    \edef\@attachname{Attachment}%
+  \fi}
 \newcommand{\cc}[1]{%
   \ifdefined\@cc%
     \edef\@cc{\@cc\par{#1}}%
@@ -79,6 +87,10 @@
     \ifdefined\@cc
       \savebox{\@field}[3cm][r]{\textbf{Cc}:}
       \item \@cc
+    \fi
+    \ifdefined\@attach
+      \savebox{\@field}[3cm][r]{\textbf{\@attachname}:}
+      \item \@attach
     \fi
     \savebox{\@field}[3cm][r]{\textbf{Subject}:}
   \item \@subject
