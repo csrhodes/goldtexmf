@@ -53,19 +53,22 @@
 
 \input{size10.clo}
 
+\RequirePackage{lastpage}
+\RequirePackage[lmargin=1.25in,rmargin=1.25in]{geometry}
+
 \newif\if@examend
 
 \def\@evenhead{}
 \def\@oddhead{}
-\def\@leftmark{\makebox[0in][l]{\bfseries \@coursecode\qquad\@examyear}}
+\def\@leftmark{\makebox[0in][l]{\bfseries \@coursecode\quad\@examyear}}
 \def\o@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\else TURN OVER\fi}}
 \if@twoside
   \def\e@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\fi}}
 \else
   \def\e@rightmark\o@rightmark
 \fi
-\def\@evenfoot{\@leftmark \hfil \thepage \hfil \e@rightmark}
-\def\@oddfoot{\@leftmark \hfil \thepage \hfil \o@rightmark}
+\def\@evenfoot{\@leftmark \hfil page \thepage\ of \pageref{LastPage} \hfil \e@rightmark}
+\def\@oddfoot{\@leftmark \hfil page \thepage\ of \pageref{LastPage} \hfil \o@rightmark}
 
 \newcommand{\coursecode}[1]{\def\@coursecode{#1}}
 \newcommand{\examyear}[1]{\def\@examyear{#1}}
