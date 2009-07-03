@@ -31,6 +31,12 @@
 
 \DeclareOption{practical}{\@practicaltrue}
 
+\newif\if@twoside
+\@twosidetrue
+
+\DeclareOption{oneside}{\@twosidefalse}
+\DeclareOption{twoside}{\@twosidetrue}
+
 \ProcessOptions
 
 % Bug: since comment is based on verbatim, this only works
@@ -49,12 +55,15 @@
 
 \newif\if@examend
 
-\@twosidetrue
 \def\@evenhead{}
 \def\@oddhead{}
 \def\@leftmark{\makebox[0in][l]{\bfseries \@coursecode\qquad\@examyear}}
-\def\e@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\fi}}
 \def\o@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\else TURN OVER\fi}}
+\if@twoside
+  \def\e@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\fi}}
+\else
+  \def\e@rightmark\o@rightmark
+\fi
 \def\@evenfoot{\@leftmark \hfil \thepage \hfil \e@rightmark}
 \def\@oddfoot{\@leftmark \hfil \thepage \hfil \o@rightmark}
 
