@@ -39,12 +39,19 @@
 
 \ProcessOptions
 
-% Bug: since comment is based on verbatim, this only works
+% since comment is based on verbatim, this only works
 % if \begin{answer} and \end{answer} are the first things on their
 % respective lines
 %
-% FIXME: find the bit in aucTeX that handles \begin{verbatim}
-% specially, and copy it.
+% the accompanying |gsexam.el| file is sufficient to inform AUC\-\TeX
+% (the emacs mode for editing \LaTeX) about the need to indent
+% |\begin{answer}| and |\end{answer}| specially.  It can be loaded
+% directly, or will be dealt with automatically if installed in a
+% directory mentioned in the emacs variable |TeX-style-path|.  (If
+% editing a file from scratch, typing |C-c C-n| or selecting the
+% |Reset Buffer| menu option from the |LaTeX| menu after the buffer
+% contents contain the directive to load this class should be
+% sufficient to load the relevant customizations).
 \if@answers
   \specialcomment{answer}{\begingroup\itshape\par}{\endgroup}
 \else
