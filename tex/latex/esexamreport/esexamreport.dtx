@@ -1,0 +1,150 @@
+% \iffalse meta-comment
+% Copyright © 2009 by Christophe Rhodes
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'; the current
+% maintainer of this work, consisting of the files esexamreport.ins
+% and esexamreport.dtx, is Christophe Rhodes <c.rhodes@gold.ac.uk>.
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{esexamreport.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<class>\ProvidesClass{esexamreport}
+%<*class>
+  [2009/07/05 v0.0 UoL External System Examiners' Report]
+%</class>
+%<*driver>
+\documentclass{ltxdoc}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+\DocInput{esexamreport.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \changes{v0.0}{2009/07/05}{Initial version}
+%
+% \GetFileInfo{esexamreport.dtx}
+%
+% \title{The \textsf{esexamreport} class\thanks{This document
+%     corresponds to \textsf{esexamreport}~\fileversion, dated
+%     \filedate.}}
+% \author{Christophe Rhodes}
+%
+% \maketitle
+%
+% \begin{abstract}
+%   This class file codifies the typographic requirements for
+%   Examiners' Reports for the University of London External System.
+% \end{abstract}
+%
+% \section{Introduction}
+%
+% The typographical requirements for Examiners' Reports for the
+% University of London External System are surprisingly strict, and
+% (let it be said) oriented towards a simple and straightforward use
+% of word processors such as Microsoft Word.  This \LaTeX\ class file
+% was written for the use of those who are unable or unwilling to use
+% such software.
+%
+% \section{User Guide}
+%
+% The use of this class is simple; there are currently no class
+% options.
+%
+% \DescribeMacro{\coursecode} \DescribeMacro{\coursetitle} The user
+% defines the course code and course title for which the report is
+% written, using the |\coursecode| and |\coursetitle| macros in the
+% preamble; the exam zone is likewise specified using the |\zone|
+% \DescribeMacro{\zone} macro in the preamble.
+%
+% As the first element in the main matter, \DescribeMacro{\maketitle}
+% |\maketitle| will create a suitable title from the metadata given.
+%
+% Following this, the examiners' report should be written, using the
+% \DescribeMacro{\heading} |\heading| macro to produce section
+% headings according to the style guide given.
+%
+% \StopEventually{\PrintChanges\PrintIndex}
+%
+% \section{Implementation}
+%
+% We piggy-back on the \textsf{article} class.  In future, we may
+% instead use something more like the \textsf{minimal} class: any use
+% of any features provided by the \textsf{article} class is
+% unsupported.
+%    \begin{macrocode}
+\LoadClass[a4paper,12pt]{article}
+%    \end{macrocode}
+% The style guide of the University of London imposes Times on us.
+%
+%  FIXME: we should make this XeTeX-friendly too, using Times New
+%  Roman instead of Type 3 Times fonts.
+%    \begin{macrocode}
+\usepackage{times}
+%    \end{macrocode}
+% We use the \textsf{geometry} package to adjust the margins,
+% accepting the defaults of that package.
+%    \begin{macrocode}
+\usepackage{geometry}
+%    \end{macrocode}
+% \begin{macro}{\coursecode}
+% \begin{macro}{\coursetitle}
+% \begin{macro}{\zone}
+% The commands for setting metadata simply store their arguments in
+% internal macro definitions:
+%    \begin{macrocode}
+\newcommand{\coursecode}[1]{\def\@coursecode{#1}}
+\newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
+\newcommand{\zone}[1]{\def\@zone{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \begin{macro}{\maketitle}
+% and those internal macros are used in our implementation of
+% |\maketitle|
+%    \begin{macrocode}
+\renewcommand{\maketitle}{%
+  \begin{flushleft}
+    Examiners' Report \number\year\\
+    \@coursecode\ \@coursetitle\\
+    Zone \@zone
+  \end{flushleft}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\heading}
+% The formatting specified for headings and body text is to make the
+% headings bold, and to separate paragraphs.  At the moment, we are
+% using a sectioning command from \textsf{article} (specifically
+% |\subsubsection*|), but this will probably change in future, as it
+% causes the implementation to be slightly twisted (because the
+% |\subsubsection*| itself generates vertical space, which needs to be
+% cancelled).  This gives rise to an odd visible artifact if two
+% |\heading|s follow each other with no intervening text.
+%    \begin{macrocode}
+\newcommand{\heading}[1]{%
+  \setlength{\parskip}{0ex}%
+  \subsubsection*{#1}%
+  \setlength{\parskip}{2ex}%
+  \vspace{-2ex}}
+%    \end{macrocode}
+% \end{macro}
+% Finally, the style guide also specifies zero paragraph indent.
+%    \begin{macrocode}
+\setlength{\parindent}{0pt}
+%    \end{macrocode}
+%
+% \Finale
