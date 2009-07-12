@@ -12,6 +12,8 @@
 \setlength\paperheight{297mm}
 \setlength\paperwidth{210mm}
 
+\pagenumbering{arabic}
+
 \RequirePackage{fontspec}
 \RequirePackage{xunicode}
 \RequirePackage{xltxtra}
