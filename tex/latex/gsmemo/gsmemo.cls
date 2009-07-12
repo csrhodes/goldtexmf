@@ -64,14 +64,13 @@
   \edef\@subject{#1}}
 
 \newcommand{\maketitle}{
+  \lhead{\Large \textit{Memorandum}}
+  \lfoot{}
+  \chead{}
+  \cfoot{}
+  \rhead{\includegraphics{Goldsmiths_Black}}
+  \rfoot{}
   \thispagestyle{fancy}
-  \if@sans
-    \sffamily
-  \fi
-%  \begin{flushleft}
-%    {\Large Memorandum}
-%  \end{flushleft}
-%  \vspace{2ex}
   \newsavebox{\@field}
   \begin{list}{\usebox{\@field}}{
       \setlength{\itemindent}{-0.5cm}
@@ -109,19 +108,10 @@
   }
 }
 
+\setlength{\headheight}{29.5pt}
+\pagestyle{fancy}
 \ProcessOptions
 
-\setlength{\headheight}{29.5pt}
-% FIXME: this if suggests that my fonts aren't set up right.  \textit
-% seems to work OK in the main document, though.
 \if@sans
-  \lhead{\Large \textit{\textsf{Memorandum}}}
-\else
-  \lhead{\Large \textit{Memorandum}}
+\renewcommand{\familydefault}{\sfdefault}
 \fi
-\lfoot{}
-\chead{}
-\cfoot{}
-\rhead{\includegraphics{Goldsmiths_Black}}
-\rfoot{}
-\pagestyle{fancy}
