@@ -19,6 +19,8 @@
 \RequirePackage{xltxtra}
 \RequirePackage{graphicx}
 \RequirePackage{fancyhdr}
+\RequirePackage{afterpage}
+\RequirePackage{lastpage}
 
 % not really supported in XeTeX...
 \RequirePackage[british]{babel}
@@ -100,7 +102,11 @@
   \vspace{2ex}
   \setlength{\parindent}{0cm}
   \setlength{\parskip}{1.5ex}
-  \pagestyle{empty}
+  \afterpage{
+    \lhead{\footnotesize \@subject}
+    \chead{\footnotesize \today}
+    \rhead{\footnotesize p.~\thepage\ of \pageref{LastPage}}
+  }
 }
 
 \ProcessOptions
@@ -118,3 +124,4 @@
 \cfoot{}
 \rhead{\includegraphics{Goldsmiths_Black}}
 \rfoot{}
+\pagestyle{fancy}
