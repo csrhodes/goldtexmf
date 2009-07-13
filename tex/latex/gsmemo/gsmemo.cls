@@ -5,7 +5,7 @@
 
 \ifx\XeTeXversion\@undefined
   \ClassError{gsmemo}
-  {This class requires XeTeX}
+  {This class requires Xe(La)TeX}
   \expandafter\@@end
 \fi
 
