@@ -1,0 +1,385 @@
+% \iffalse meta-comment
+% Copyright © 2009 by Christophe Rhodes
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'; the current
+% maintainer of this work, consisting of the files esexamreport.ins
+% and esexamreport.dtx, is Christophe Rhodes <c.rhodes@gold.ac.uk>.
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{gsmemo.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%<class>\ProvidesClass{gsmemo}
+%<*class>
+  [2009/07/13 v0.1 Goldsmiths House-Style Memorandum]
+%</class>
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[cm-default]{fontspec}
+\usepackage{xltxtra}
+\usepackage{xunicode}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+\DocInput{gsmemo.dtx}
+\end{document}
+%</driver>
+% \fi
+% 
+% \changes{v0.1}{2009/07/12}{Initial version}
+% \GetFileInfo{gsmemo.dtx}
+%
+% \title{The \textsf{gsmemo} class\thanks{This document corresponds to
+%     \textsf{gsmemo}~\fileversion, dated \filedate.}}
+% \author{Christophe Rhodes}
+%
+% \maketitle
+%
+% \begin{abstract}
+%   This class file produces memoranda, suitable for electronic
+%   distribution or for printing, with formatting that is intended to
+%   be compatible with the house style of Goldsmiths, University of
+%   London.
+% \end{abstract}
+% 
+% \section{Introduction}
+%
+% In the modern era of ubiquitous electronic communications, there are
+% nevertheless occasions where the lack of a deployed infrastructure
+% for sending authenticated, non-repudiatable messages necessitates
+% printing off and signing, in the old-fashioned way, a memorandum.
+% This \LaTeX\ class was implemented when, in quick succession, the
+% author needed to send authenticated memoranda to the Head of the
+% Graduate School Office, his Head of Department, and the Assessment
+% Office of the University of London External System; word processing
+% software, while expedient in any individual instance, leads to a
+% severe loss of time and heightened blood pressure on repeated
+% exposure.
+%
+% A memorandum as produced by this class has a first page with a
+% number of fields: the `To', `From', `Date' and `Subject' fields are
+% always present, while `Cc' and `Attachment(s)' fields are generated
+% if needed.  All fields other than `Date' (which is automatically
+% generated) and `Subject' can contain multiple entries, which are
+% separated by linebreaks.  The first page is headed by a large text
+% `\textit{Memorandum}' on the left, and the Goldsmiths logo in black
+% on the right; subsequent pages, if any, are headed by the memo's
+% subject on the left, the date in the centre and the page number on
+% the right.
+%
+% \section{User Guide}
+% \label{s:userguide}
+%
+% Writing a memorandum with the \textsf{gsmemo} class is
+% straightforward.  The class accepts a single option, |sans|, which
+% specifies that the document should be formatted with the default
+% text family set to sans-serif, rather than the usual roman.
+%
+% After the |\documentclass| directive, the preamble should contain
+% the metadata information for the memo.  The \DescribeMacro{\to}|\to|
+% macro, for example, is used to inform the system of a direct
+% recipients; if more than one recipient is specified, with multiple
+% uses of the |\to| macro, they will appear in the memo heading in the
+% order in which they are given in the document.
+%
+% Similarly, the \DescribeMacro{\from}|\from|,
+% \DescribeMacro{\cc}|\cc| and \DescribeMacro{\attach}|\attach| macros
+% allow the user to inform the system of senders, carbon-copy
+% recipients and attachments (supporting documents) to the memorandum.
+% As with |\to|, multiple uses of each of these is supported, and the
+% order of their specification within each field will be preserved in
+% the final output.
+%
+% The \DescribeMacro{\subject}|\subject| macro specifies the subject
+% of the memo, which will be rendered both on the front page and in
+% the heading of any subsequent pages.  The date is taken from the
+% standard \LaTeX\ macro \DescribeMacro{\today}|\today|, which should
+% be overridden if necessary using |\renewcommand|.
+%
+% The first thing in the mainmatter, following |\begin{document}|,
+% should be \DescribeMacro{\maketitle}|\maketitle|, which is
+% responsible for the production of the frontmatter of the memorandum.
+% After this should come the text of the memorandum, terminated by
+% |\end{document}|.
+%
+% Perhaps the only unusual thing about this class is that it is
+% incompatible with the regular \LaTeX\ processor (and its close
+% cousin pdf\LaTeX): the Goldsmiths house style for internal documents
+% specifies the Arial and Georgia fonts for sans-serif and serif text
+% respectively, which are not easily available as Type1 fonts, but are
+% available in TrueType format as part of the `Core fonts for the Web'
+% package originally from Microsoft.  Thus, memoranda must be produced
+% using the \XeTeX-based \XeLaTeX\ processor, available as |xelatex| in
+% \TeX~Live and in Mik\TeX, and selectable as a typesetting option in
+% \TeX{}Shop as distributed with Mac~OS~X.
+% 
+% \StopEventually{\PrintChanges\PrintIndex}
+%
+% \section{Implementation}
+%
+% \subsection{Minimal class requirements}
+% The first thing we do is exit with a diagnostic if the underlying
+% \TeX\ implementation is not \XeTeX.
+%    \begin{macrocode}
+\ifx\XeTeXversion\@undefined
+  \ClassError{gsmemo}
+  {This class requires Xe(La)TeX}
+  \expandafter\@@end
+\fi
+%    \end{macrocode}
+% \begin{macro}{\textwidth}
+% \begin{macro}{\textheight}
+% \begin{macro}{\normalsize}
+%   Once we have assured that we are running the correct \TeX\ engine,
+%   we provide the `minimal' information for a class
+%   file\footnote{Described in \textit{\LaTeX2e\ for class and package
+%       writers}, available as |clsguide.pdf|}: a definition for
+%   |\normalsize| and values for |\textheight| and |\textwidth| --
+%   which we achieve by loading the standard |size11.clo| file -- and
+%   a specification for page-numbering:
+%    \begin{macrocode}
+\setlength\paperheight{297mm}
+\setlength\paperwidth{210mm}
+\input{size11.clo}
+\pagenumbering{arabic}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Required Packages}
+% 
+% We use a number of \LaTeX\ and \XeLaTeX\ packages to implement our
+% own functionality.  Firstly, the \XeLaTeX\ package
+% \textsf{fontspec}, which allows us to select fonts conforming to
+% Goldsmiths house style; next, \textsf{xunicode} and
+% \textsf{xltxtra}, which merely give the seasoned \LaTeX\ user a
+% feeling of remaining in Kansas (rather than being transported to a
+% different world).
+%    \begin{macrocode}
+\RequirePackage{fontspec}
+\RequirePackage{xunicode}
+\RequirePackage{xltxtra}
+%    \end{macrocode}
+% We also use a number of standard \LaTeX\ packages.  The
+% \textsf{graphicx} package allows us to include graphics, including
+% the Goldsmiths logo.
+%    \begin{macrocode}
+\RequirePackage{graphicx}
+%    \end{macrocode}
+% The \textsf{fancyhdr} package allows us easily to specify custom
+% headings for our memo, while the \textsf{afterpage} package allows
+% us to change them in mid-document while not running the risk that a
+% badly-placed page break will cause havoc.  The \textsf{lastpage}
+% package supports a |LastPage| label, usable through
+% |\pageref{LastPage}| to assist in producing page numbering in the
+% form ``page $m$ of $n$''.
+%    \begin{macrocode}
+\RequirePackage{fancyhdr}
+\RequirePackage{afterpage}
+\RequirePackage{lastpage}
+%    \end{macrocode}
+% Finally, even though it is not really supported in \XeLaTeX, we use
+% the \textsf{babel} package with the |british| option, essentially so
+% that |\today| has a date formatted in the British English manner
+% (rather than the American English default).
+%    \begin{macrocode}
+\RequirePackage[british]{babel}
+%    \end{macrocode}
+%
+% \subsection{Internals}
+%
+% In this section, we expose the internals of the implementation of
+% the \textsf{gsmemo} class.  None of the details shown here should be
+% taken as being supported, unless they are mentioned in section
+% \ref{s:userguide} above.
+%
+% We begin by using the \textsf{fontspec} |\setromanfont| and
+% |\setsansfont| to load the Georgia and Arial fonts respectively, in
+% accordance with Goldsmiths house style.
+%    \begin{macrocode}
+\setromanfont[Mapping=tex-text]{Georgia}
+\setsansfont[Mapping=tex-text]{Arial}
+%    \end{macrocode}
+% 
+% \begin{macro}{\from}
+%   We define the |\from| macro, taking a single (mandatory) argument,
+%   to store the senders of the memorandum in the |\@from| internal
+%   variable.  If |\@from| already contains a definition, we append to
+%   that definition a paragraph break and the argument; otherwise, we
+%   simply set the internal variable to the argument given.
+%    \begin{macrocode}
+\newcommand{\from}[1]{%
+  \ifdefined\@from%
+    \edef\@from{\@from\par{#1}}%
+  \else%
+    \edef\@from{#1}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\to}
+% \begin{macro}{\attach}
+% \begin{macro}{\cc}
+%   The |\to|, |\attach| and |\cc| macros are very similar in their
+%   implementation to the |\from| macro, with only minor differences:
+%   The |\to| macro needs to be defined with |\renewcommand|, while
+%   the |\attach| commands needs not only to track the description of
+%   attached document but also their number: if more than one
+%   attachment is provided, we set |\@attachname| to `Attachments',
+%   otherwise to `Attachment'.  |\cc| is identical in all but names to
+%   |\from|.
+%    \begin{macrocode}
+\renewcommand{\to}[1]{%
+  \ifdefined\@to%
+    \edef\@to{\@to\par{#1}}%
+  \else%
+    \edef\@to{#1}%
+  \fi}
+\newcommand{\attach}[1]{%
+  \ifdefined\@attach%
+    \edef\@attach{\@attach\par{#1}}%
+    \edef\@attachname{Attachments}%
+  \else%
+    \edef\@attach{#1}%
+    \edef\@attachname{Attachment}%
+  \fi}
+\newcommand{\cc}[1]{%
+  \ifdefined\@cc%
+    \edef\@cc{\@cc\par{#1}}%
+  \else%
+    \edef\@cc{#1}%
+  \fi}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% 
+% \begin{macro}{\subject}
+%   The |\subject| macro is simpler: we simply store the argument in
+%   the |\@subject| variable, overwriting any previous definition.  In
+%   future, we may choose to enforce only having one subject in a memo
+%   by causing an error when processing a document with multiple
+%   definitions.
+%    \begin{macrocode}
+\newcommand{\subject}[1]{%
+  \edef\@subject{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\maketitle}
+%   The |\maketitle| macro is responsible for most of the formatting
+%   of memoranda.
+%    \begin{macrocode}
+\newcommand{\maketitle}{
+%    \end{macrocode}
+% Firstly, the headers of the first page are set up by using the
+% \textsf{fancyhdr} commands
+%    \begin{macrocode}
+  \lhead{\Large \textit{Memorandum}}
+  \lfoot{}
+  \chead{}
+  \cfoot{}
+  \rhead{\includegraphics{Goldsmiths_Black}}
+  \rfoot{}
+%    \end{macrocode}
+% Additionally, using the |\afterpage| directive, we request that
+% subsequent pages should have a header with the subject, date and
+% page numbering (in the form ``p. $m$ of $n$'')
+%    \begin{macrocode}
+  \afterpage{
+    \lhead{\footnotesize \@subject}
+    \chead{\footnotesize \today}
+    \rhead{\footnotesize p.~\thepage\ of \pageref{LastPage}}
+  }
+%    \end{macrocode}
+% In order to obtain a memorandum front page with field labels
+% right-aligned in the left margin, we define a box to use as a |list|
+% item label.
+%    \begin{macrocode}
+  \newsavebox{\@field}
+  \begin{list}{\usebox{\@field}}{
+%    \end{macrocode}
+% The |list| environment has some specifications for lengths to make 
+% it look pretty:
+%    \begin{macrocode}
+      \setlength{\itemindent}{-0.5cm}
+      \setlength{\labelwidth}{2.5cm}
+      \setlength{\labelsep}{0.5cm}
+      \setlength{\listparindent}{0cm}
+      \setlength{\itemsep}{1ex}
+      \setlength{\parsep}{0.2ex}
+      \setlength{\topsep}{0ex}
+    }
+%    \end{macrocode}
+% Then, preceding each use of |\item|, we save a right-aligned box
+% naming the field we are about to display to the |\@field| box; we
+% use this technique first to display the `Date', `From' and `To'
+% fields, which are always present.
+%    \begin{macrocode}
+    \savebox{\@field}[3cm][r]{\textbf{Date}:}
+  \item \today
+    \savebox{\@field}[3cm][r]{\textbf{From}:}
+  \item \@from
+    \savebox{\@field}[3cm][r]{\textbf{To}:}
+  \item \@to
+%    \end{macrocode}
+% The `Cc' and `Attachment(s)' fields are only displayed if there has
+% been a use of the respective macros:
+%    \begin{macrocode}
+    \ifdefined\@cc
+      \savebox{\@field}[3cm][r]{\textbf{Cc}:}
+      \item \@cc
+    \fi
+    \ifdefined\@attach
+      \savebox{\@field}[3cm][r]{\textbf{\@attachname}:}
+      \item \@attach
+    \fi
+%    \end{macrocode}
+% Finally, the `Subject' field is displayed
+%    \begin{macrocode}
+    \savebox{\@field}[3cm][r]{\textbf{Subject}:}
+  \item \@subject
+  \end{list}
+%    \end{macrocode}
+% We skip a little space after the memo header, and arrange such that
+% paragraphs have 1.5ex of space between them, but have no first-line
+% indent.
+%    \begin{macrocode}
+  \vspace{2ex}
+  \setlength{\parindent}{0cm}
+  \setlength{\parskip}{1.5ex}
+}
+%    \end{macrocode}
+% \end{macro}
+% The remainder of the implementation of \textsf{gsmemo} merely
+% ensures that the initial state is acceptable: we request |fancy|
+% pagestyle globally, and (because of the vertical size of the
+% Goldsmiths logo) set the header height to be 29.5pt.
+%    \begin{macrocode}
+\pagestyle{fancy}
+\setlength{\headheight}{29.5pt}
+%    \end{macrocode}
+%
+% Finally, the \textsf{gsmemo} class has one option, |sans|, whose
+% effect is to select sans-serif text as the default:
+%    \begin{macrocode}
+\newif\if@sans
+\DeclareOption{sans}{\@sanstrue}
+\ProcessOptions
+\if@sans
+\renewcommand{\familydefault}{\sfdefault}
+\fi
+%    \end{macrocode}
+% \Finale
