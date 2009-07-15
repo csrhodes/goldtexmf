@@ -82,7 +82,7 @@
 \newcommand{\subject}[1]{\def\@subject{#1}}
 \newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
 \newcommand{\examtime}[1]{\def\@examtime{#1}}
-\newcommand{\coverpage}{\@coverhead}
+\newcommand{\coverpage}{\@coverhead\clearpage}
 
 \pagenumbering{arabic}
 
@@ -93,6 +93,9 @@
 % Exams start on a new page.
   \clearpage
   \setcounter{question}{0}
+  \setlength{\leftmargini}{2.5em}
+  \setlength{\leftmarginii}{1.5em}
+  \setlength{\labelwidth}{\leftmargini}
   \def\@coverhead{
     \begin{flushleft}
       \Large \bfseries UNIVERSITY OF LONDON\\ [14pt]
@@ -117,8 +120,6 @@
 \newcommand{\qmarks}[1]{\unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}\addtocounter{qmarks}{#1}}
 
 \newenvironment{question}[2][]{
-% Each |question| starts on a new page.
-  \clearpage
 % Within a |question| environment, we ensure that labels and references 
 % to |enumerate| |\item|s are appropriate: the labels are of the form 
 % ``(a)'' and ``ii.'', while references generated with |\ref| are ``(a)''
@@ -130,8 +131,12 @@
   \def\qm@rks{#2}
   \stepcounter{question}
   \begin{trivlist}
-    \item[\bfseries Question \arabic{question}] {~#1}
+    \item[\bfseries Question \arabic{question}] {\qquad#1}
       \begin{enumerate}
+% Within this and child |enumerate| environments, we request a separation 
+% of the text from the label by 0.5em.  Without this, the label and text 
+% abut directly on each other.
+        \setlength{\labelsep}{.5em}
   }
   {\end{enumerate}\end{trivlist}%
 \ifnum\qm@rks=\value{qmarks}
@@ -144,9 +149,3 @@
   \fi
 
 \fi}
-
-\setlength{\leftmargini}{2.5em}
-\setlength{\leftmarginii}{1.4em}
-\setlength{\labelsep}{.5em}
-\setlength{\labelwidth}{\leftmargini}
-\addtolength{\labelwidth}{-\labelsep}
