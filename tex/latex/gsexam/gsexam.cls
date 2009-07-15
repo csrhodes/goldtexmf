@@ -11,21 +11,17 @@
 
 \setlength\paperheight{297mm}
 \setlength\paperwidth{210mm}
+\input{size10.clo}
+\pagenumbering{arabic}
 
 \RequirePackage{substr}
-\RequirePackage{comment}
-
-\newif\if@answers
-
-\DeclareOption{answers}{\@answerstrue}
-\DeclareOption{noanswers}{\@answersfalse}
 
 \newif\if@checked
 \@checkedtrue
 
 \DeclareOption{unchecked}{\@checkedfalse}
 
-\IfSubStringInString{\detokenize{answers}}{\jobname}{\@answerstrue}{\@answersfalse}
+\IfSubStringInString{\detokenize{answers}}{\jobname}{\PassOptionsToPackage{answers}{gsexam}}{}
 
 \newif\if@practical
 
@@ -37,31 +33,14 @@
 \DeclareOption{oneside}{\@twosidefalse}
 \DeclareOption{twoside}{\@twosidetrue}
 
+\DeclareOption{answers}{\PassOptionsToPackage{answers}{gsexam}}
+\DeclareOption{noanswers}{\PassOptionsToPackage{noanswers}{gsexam}}
+
 \ProcessOptions
-
-% since comment is based on verbatim, this only works
-% if \begin{answer} and \end{answer} are the first things on their
-% respective lines
-%
-% the accompanying |gsexam.el| file is sufficient to inform AUC\-\TeX
-% (the emacs mode for editing \LaTeX) about the need to indent
-% |\begin{answer}| and |\end{answer}| specially.  It can be loaded
-% directly, or will be dealt with automatically if installed in a
-% directory mentioned in the emacs variable |TeX-style-path|.  (If
-% editing a file from scratch, typing |C-c C-n| or selecting the
-% |Reset Buffer| menu option from the |LaTeX| menu after the buffer
-% contents contain the directive to load this class should be
-% sufficient to load the relevant customizations).
-\if@answers
-  \specialcomment{answer}{\begingroup\itshape\par}{\endgroup}
-\else
-  \excludecomment{answer}
-\fi
-
-\input{size10.clo}
 
 \RequirePackage{lastpage}
 \RequirePackage[lmargin=1.25in,rmargin=1.25in]{geometry}
+\RequirePackage{gsexam}
 
 \newif\if@examend
 
@@ -84,7 +63,6 @@
 \newcommand{\examtime}[1]{\def\@examtime{#1}}
 \newcommand{\coverpage}{\@coverhead\clearpage}
 
-\pagenumbering{arabic}
 
 \newenvironment{bscexam}{
 % At the start of the exam, we ensure that the |\@examend| boolean
