@@ -87,7 +87,11 @@
 \pagenumbering{arabic}
 
 \newenvironment{bscexam}{
-  \global\@examendfalse
+% At the start of the exam, we ensure that the |\@examend| boolean
+% is set to false.
+  \@examendfalse
+% Exams start on a new page.
+  \clearpage
   \setcounter{question}{0}
   \def\@coverhead{
     \begin{flushleft}
@@ -100,30 +104,29 @@
       Date and time: \\ [14pt]
     \end{flushleft}
     \hrule\par\vskip12pt\relax}}
-  {\global\@examendtrue}
-
-% Bug: these definitions have global scope.  It would be much nicer
-% to have them only be like this within \begin{bscexam}
-%   .. \end{bscexam} so that inclusion of an exam paper in another
-% document doesn't make all the numbering screwy.  Since this is a
-% class not a style, that doesn't matter so much, but it will matter
-% once the style based on this class is implemented.
-%
-% FIXME: find out how to make these have local scope.  One way is of
-% course to take the current definitions (if applicable), save them
-% away at \begin{question}, and restore them at \end{question}.  It
-% might be possible to do better...
-\renewcommand{\theenumi}{(\alph{enumi})}
-\newcommand{\labelenumi}{\theenumi}
-\renewcommand{\theenumii}{\alph{enumi}.(\roman{enumii})}
-\newcommand{\labelenumii}{\roman{enumii}.}
+  {%
+% At the end of the exam, we set |\@examend| to be true.
+    \@examendtrue%
+% Then we clear the page, so that the any footer (such as that coming 
+% from the \textsf{gsexam} class with {\bf END OF EXAMINATION}) is set
+% within the scope of the |bscexam| environment.
+    \clearpage}
 
 \newcounter{question}
 \newcounter{qmarks}[question]
 \newcommand{\qmarks}[1]{\unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}\addtocounter{qmarks}{#1}}
 
 \newenvironment{question}[2][]{
+% Each |question| starts on a new page.
   \clearpage
+% Within a |question| environment, we ensure that labels and references 
+% to |enumerate| |\item|s are appropriate: the labels are of the form 
+% ``(a)'' and ``ii.'', while references generated with |\ref| are ``(a)''
+% and a.(ii) repectively for first- and second-level |\item|s.
+  \def\theenumi{(\alph{enumi})}
+  \def\labelenumi{\theenumi}
+  \def\theenumii{\alph{enumi}.(\roman{enumii})}
+  \def\labelenumii{\roman{enumii}.}
   \def\qm@rks{#2}
   \stepcounter{question}
   \begin{trivlist}
