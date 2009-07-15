@@ -103,13 +103,16 @@
   {\global\@examendtrue}
 
 % Bug: these definitions have global scope.  It would be much nicer
-% to have them only be like this within \begin{bcsexam}
-%   .. \end{bcsexam} so that inclusion of an exam paper in another
+% to have them only be like this within \begin{bscexam}
+%   .. \end{bscexam} so that inclusion of an exam paper in another
 % document doesn't make all the numbering screwy.  Since this is a
 % class not a style, that doesn't matter so much, but it will matter
 % once the style based on this class is implemented.
 %
-% FIXME: find out how to make these have local scope
+% FIXME: find out how to make these have local scope.  One way is of
+% course to take the current definitions (if applicable), save them
+% away at \begin{question}, and restore them at \end{question}.  It
+% might be possible to do better...
 \renewcommand{\theenumi}{(\alph{enumi})}
 \newcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\alph{enumi}.(\roman{enumii})}
