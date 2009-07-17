@@ -6,7 +6,6 @@ MAKEINDEX=makeindex
 
 all: $(CLASS).cls $(CLASS).pdf
 
-clean:
-	rm -f $(CLASS).{aux,cls,dvi,glo,gls,idx,ilg,ind,log,pdf,ps}
-
 include ../../../tools/latex-class.mk
+include ../../../tools/latex-clean.mk
+include ../../../tools/latex-doc.mk
