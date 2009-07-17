@@ -7,6 +7,14 @@
 \DeclareOption{answers}{\@answerstrue}
 \DeclareOption{noanswers}{\@answersfalse}
 
+% A boolean describing whether to check mark totals for each question,
+% on by default.
+\newif\if@checked
+\@checkedtrue
+% To turn off mark count checking, pass the unchecked class or style
+% argument.
+\DeclareOption{unchecked}{\@checkedfalse}
+
 \ProcessOptions
 
 \RequirePackage{comment}
@@ -57,6 +65,7 @@
   \@examendfalse
 % Exams start on a new page.
   \clearpage
+% The first question is question 1.
   \setcounter{question}{0}
   \setlength{\leftmargini}{2.5em}
   \setlength{\leftmarginii}{1.5em}
@@ -79,3 +88,36 @@
 % from the \textsf{gsexam} class with {\bf END OF EXAMINATION}) is set
 % within the scope of the |bscexam| environment.
     \clearpage}
+
+\newcounter{qmarks}[question]
+\newcommand{\qmarks}[1]{\unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}\addtocounter{qmarks}{#1}}
+
+\newenvironment{question}[2][]{
+% Within a |question| environment, we ensure that labels and references 
+% to |enumerate| |\item|s are appropriate: the labels are of the form 
+% ``(a)'' and ``ii.'', while references generated with |\ref| are ``(a)''
+% and a.(ii) repectively for first- and second-level |\item|s.
+  \def\theenumi{(\alph{enumi})}
+  \def\labelenumi{\theenumi}
+  \def\theenumii{\alph{enumi}.(\roman{enumii})}
+  \def\labelenumii{\roman{enumii}.}
+  \def\qm@rks{#2}
+  \stepcounter{question}
+  \begin{trivlist}
+    \item[\bfseries Question \arabic{question}] {\qquad#1}
+      \begin{enumerate}
+% Within this and child |enumerate| environments, we request a separation 
+% of the text from the label by 0.5em.  Without this, the label and text 
+% abut directly on each other.
+        \setlength{\labelsep}{.5em}
+  }
+  {\end{enumerate}\end{trivlist}%
+\ifnum\qm@rks=\value{qmarks}
+\else
+  \if@checked
+  \typeout{Mark mismatch in question \arabic{question}: expected \qm@rks, got \arabic{qmarks}}
+  \centering 
+  This question has a mark count mismatch: expected \textbf{\qm@rks},
+  got \textbf{\arabic{qmarks}}.\par
+  \fi
+\fi}
