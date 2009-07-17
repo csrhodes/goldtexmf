@@ -37,7 +37,7 @@
 % \fi
 % 
 % \changes{v0.1}{2009/03/27}{Initial version}
-% \changes{v0.2}{2009/07/17}{Conversion to Documented TeX}
+% \changes{v0.2}{2009/07/17}{Conversion to Documented \TeX}
 % \GetFileInfo{gsexam.dtx}
 %
 % \title{The \textsf{gsexam} package and class\thanks{This document
@@ -47,9 +47,54 @@
 % \maketitle
 %
 % \begin{abstract}
+%   This document describes the \LaTeX-based software written to
+%   support typesetting examinations for Goldsmiths, University of
+%   London.  The software consists of a class file, intended to
+%   typeset a single examination, and a style file which can be used
+%   with other document classes, which can be used to typeset
+%   collections of examinations, or examinations as a part of other
+%   documents (such as External System subject guides).
 % \end{abstract}
 % 
 % \section{Introduction}
+%
+% The task of typesetting examination papers is at least partly a
+% mechanical one: the overall page layout is fairly rigidly
+% determined; each question has a certain number of marks allocated to
+% it; and so on.  Even the front-page rubrics have a standard form.
+% Given all this, it would seem to make sense to capture the
+% commonalities programmatically.  In addition, the codification of
+% standard practice in \LaTeX\ specifically allows us to use the
+% features provided by a Turing-complete programming language to
+% automate menial tasks, such as ensuring that the marks allocated to
+% question sub-parts sum to the total number of marks allocated to
+% that question.
+%
+% Motivated by these general aims, and by the specific observation by
+% the External Examiners of the Department of Computing for the
+% 2008-09 session that there was potential for student confusion given
+% the large number of variant formats in the examination papers
+% submitted for scrutiny, the \textsf{gsexam} class and style file
+% documented here is an attempt to allow examiners to set papers with
+% the menial aspects of that setting taken care of, allowing them to
+% concentrate on the task of setting an examination that is passable
+% by all who have put in effort, yet can clearly discriminate between
+% the good and the merely adequate.
+%
+% In addition, since examination papers are used in contexts other
+% than for students to sit (for example, in External System subject
+% guides), this software separates out the treatement of an
+% examination as a collection of questions -- implemented in the
+% \textsf{gsexam} style file, which can be used in a document of
+% arbitrary \LaTeX\ class with |\usepackage| -- and an examination as
+% a document to present to students, where certain niceties such as
+% instructions to {\bf TURN~OVER} and page numbering to assure readers
+% that no pages are missing are \textit{de rigeur}.
+%
+% The software described here has drawn from style files and \LaTeX\
+% fragments written and maintained by Sebastian Danicic and Geraint
+% Wiggins, to whom the author extends thanks for providing inspiration
+% and existing practice.
 %
 % \section{User Guide}
 %
