@@ -42,8 +42,6 @@
 \RequirePackage[lmargin=1.25in,rmargin=1.25in]{geometry}
 \RequirePackage{gsexam}
 
-\newif\if@examend
-
 \def\@evenhead{}
 \def\@oddhead{}
 \def\@leftmark{\makebox[0in][l]{\bfseries \@coursecode\quad\@examyear}}
@@ -56,44 +54,6 @@
 \def\@evenfoot{\@leftmark \hfil page \thepage\ of \pageref{LastPage} \hfil \e@rightmark}
 \def\@oddfoot{\@leftmark \hfil page \thepage\ of \pageref{LastPage} \hfil \o@rightmark}
 
-\newcommand{\coursecode}[1]{\def\@coursecode{#1}}
-\newcommand{\examyear}[1]{\def\@examyear{#1}}
-\newcommand{\subject}[1]{\def\@subject{#1}}
-\newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
-\newcommand{\examtime}[1]{\def\@examtime{#1}}
-\newcommand{\coverpage}{\@coverhead\clearpage}
-
-
-\newenvironment{bscexam}{
-% At the start of the exam, we ensure that the |\@examend| boolean
-% is set to false.
-  \@examendfalse
-% Exams start on a new page.
-  \clearpage
-  \setcounter{question}{0}
-  \setlength{\leftmargini}{2.5em}
-  \setlength{\leftmarginii}{1.5em}
-  \setlength{\labelwidth}{\leftmargini}
-  \def\@coverhead{
-    \begin{flushleft}
-      \Large \bfseries UNIVERSITY OF LONDON\\ [14pt]
-      GOLDSMITHS COLLEGE\\ [14pt]
-      B.~Sc.~Examination \@examyear\\ [28pt]
-      \@subject\\ [14pt]
-      \@coursecode \quad \@coursetitle\\ [14pt]
-      \large \bfseries Duration: \@examtime\\ [14pt]
-      Date and time: \\ [14pt]
-    \end{flushleft}
-    \hrule\par\vskip12pt\relax}}
-  {%
-% At the end of the exam, we set |\@examend| to be true.
-    \@examendtrue%
-% Then we clear the page, so that the any footer (such as that coming 
-% from the \textsf{gsexam} class with {\bf END OF EXAMINATION}) is set
-% within the scope of the |bscexam| environment.
-    \clearpage}
-
-\newcounter{question}
 \newcounter{qmarks}[question]
 \newcommand{\qmarks}[1]{\unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}\addtocounter{qmarks}{#1}}
 

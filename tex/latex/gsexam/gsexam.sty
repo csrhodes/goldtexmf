@@ -29,3 +29,53 @@
   \excludecomment{answer}
 \fi
 
+% we define a boolean to keep track of whether we have got to the end
+% of the exam or not.  It is reset (to false) at the beginning of each
+% |bscexam| environment.  At present, it's only used for generating
+% the appropriate page footer (which is handled by the
+% \textsf{gsexam} class)
+\newif\if@examend
+\newcounter{question}
+
+% The following commands simply store their argument in an internal
+% macro, for later use.
+\newcommand{\coursecode}[1]{\def\@coursecode{#1}}
+\newcommand{\examyear}[1]{\def\@examyear{#1}}
+\newcommand{\subject}[1]{\def\@subject{#1}}
+\newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
+\newcommand{\examtime}[1]{\def\@examtime{#1}}
+
+% The |\coverpage| macro produces the cover page.  At the moment, only
+% the header is produced; we will eventually also implement rubrics.
+\newcommand{\coverpage}{\@coverhead\clearpage}
+
+% The |bscexam| environment surrounds a number of |question|
+% environments.
+\newenvironment{bscexam}{
+% At the start of the exam, we ensure that the |\@examend| boolean
+% is set to false.
+  \@examendfalse
+% Exams start on a new page.
+  \clearpage
+  \setcounter{question}{0}
+  \setlength{\leftmargini}{2.5em}
+  \setlength{\leftmarginii}{1.5em}
+  \setlength{\labelwidth}{\leftmargini}
+  \def\@coverhead{
+    \begin{flushleft}
+      \Large \bfseries UNIVERSITY OF LONDON\\ [14pt]
+      GOLDSMITHS COLLEGE\\ [14pt]
+      B.~Sc.~Examination \@examyear\\ [28pt]
+      \@subject\\ [14pt]
+      \@coursecode \quad \@coursetitle\\ [14pt]
+      \large \bfseries Duration: \@examtime\\ [14pt]
+      Date and time: \\ [14pt]
+    \end{flushleft}
+    \hrule\par\vskip12pt\relax}}
+  {%
+% At the end of the exam, we set |\@examend| to be true.
+    \@examendtrue%
+% Then we clear the page, so that the any footer (such as that coming 
+% from the \textsf{gsexam} class with {\bf END OF EXAMINATION}) is set
+% within the scope of the |bscexam| environment.
+    \clearpage}
