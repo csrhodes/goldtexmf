@@ -94,88 +94,379 @@
 % The software described here has drawn from style files and \LaTeX\
 % fragments written and maintained by Sebastian Danicic and Geraint
 % Wiggins, to whom the author extends thanks for providing inspiration
-% and existing practice.
+% and a cross-section of existing practice.
 %
 % \section{User Guide}
+%
+% \subsection{Class or package?}
+%
+% The normal intended use for this software is to typeset an
+% individual exam, whether that be for the normal session, the late
+% Summer resit session, a sample paper (for a new or revised course),
+% or for the External System of the University of London's Summer
+% session.  In those circumstances, users should use the
+% \textsf{gsexam} \emph{class}, by providing |gsexam| as the argument
+% to the |\documentclass| \LaTeX\ directive.
+%
+% Under certain circumstances, such as the provision of a sample
+% examination paper within a University of London External System
+% Subject Guide, the \textsf{gsexam} \emph{package} or `style file'
+% should be used instead, using |\usepackage{gsexam}| in the preamble,
+% which gives access to the principal environments and macros, but
+% does not override document headers and footers, or choose to include
+% the contents of |answer| environments (as described in section
+% \ref{s:answerinc} below)
+%
+% \subsection{The cover page}
+%
+% \DescribeEnv{bscexam} The |bscexam| environment encloses all of the
+% information related to a single examination paper.  Within the
+% |bscexam| environment, a number of macros are used to declare the
+% metadata for a given paper: \DescribeMacro{\coursecode}|\coursecode|
+% for the Goldsmiths and Departmental course codes;
+% \DescribeMacro{\coursetitle}|\coursetitle| for the name of the
+% course; \DescribeMacro{\examtime}|\examtime| for the normal length
+% of the exam; \DescribeMacro{\examyear}|\examyear| for the year in
+% which the exam is to be taken; and
+% \DescribeMacro{\subject}|\subject| for the overall programme of
+% study of the exam.  (These names for these metadata macros are not
+% perfect, and may change in the near future.)
+%
+% After all of these metadata fields are specified, the
+% \DescribeMacro{\coverpage}|\coverpage| macro sets the cover page of
+% the exam.
+%
+% \subsection{Questions and answers}
+%
+% \DescribeEnv{question} The |question| environment takes two
+% arguments.  The first, the title of the question, is optional (and
+% so if given is passed in square brackets, as is usual in \LaTeX).
+% The second argument is mandatory, and is the number of marks
+% allocated for that question.
+%
+% The |question| environment implicitly begins an enumerated list,
+% such that \DescribeMacro{\item}|\item| within it begins a question
+% part.  It is also possible to have a question with no parts at all.
+%
+% It is possible to use the normal \LaTeX\ handling of references to
+% refer to particular question parts: each part to be referred to
+% should have a unique \DescribeMacro{\label}|\label| attached to it,
+% and correcly-formatted references can then be generated (with the
+% usual caveat that two passes of the \LaTeX processor might be
+% needed) using \DescribeMacro{\ref}|\ref|.
+%
+% Within a question, the \DescribeMacro{\qmarks}|\qmarks| macro will
+% set, within square brackets and in the right margin, the number of
+% marks given as its argument.  In addition, unless the |unchecked|
+% option has been given, the total number of marks given to |\qmarks|
+% within a question is compared against the declared number of marks
+% given to that |question| environment, and if there is a mismatch, a
+% diagnostic message is emitted.
+%
+% \DescribeEnv{answer} The |answer| environment is for providing the
+% answers to questions.  Under default operation, the contents of the
+% |answer| environment are simply discarded; however, using the
+% |answers| class option, or by other means (see section
+% \ref{s:answerinc} below).
+%
+% \subsubsection{Default inclusion of \texttt{answer} environments}
+% \label{s:answerinc}
+%
+% If using the \textsf{gsexam} style only, the default treatment of
+% |answer| environments is to exclude them, including them only with
+% an explicit |answers| argument in the |\usepackage{gsexam}| line:
+% effectively the default is the same treatement as passing an
+% explicit |noanswers| argument.
+%
+% However, if using the \textsf{gsexam} class file, as when
+% typesetting an individual exam, the default treatment is slightly
+% different: in all cases an explicit |answers| or |noanswers|
+% argument is respected; however, when both are absent the default is
+% not to include answers, \emph{except} if the \TeX\ |\jobname|
+% variable contains the string `|answers|'.  The |\jobname| itself
+% defaults to the name of the |.tex| file being processed, but this
+% can be overridden using the |-jobname| command-line flag.  This
+% behaviour allows the production of versions of the exam with and
+% without answers without editing the \LaTeX\ source file.
+%
+% \subsubsection{Editor support for the \texttt{answer} environment}
+%
+% The |answer| environment is implemented using the |comment| package
+% (see section \ref{s:answerimp} for details), which itself is based
+% on the |verbatim| package.  This means that the |answer| environment
+% only works absolutely properly if |\begin{answer}| and
+%   |\end{answer}| are the first things on their respective lines.
+%
+% The |gsexam.el| file which accompanies this software is sufficient
+% to inform AUC\-\TeX (the emacs mode for editing \LaTeX) about the
+% need to indent |\begin{answer}| and |\end{answer}| specially.  It
+% can be loaded directly, or will be dealt with automatically if
+% installed in a directory mentioned in the emacs variable
+% |TeX-style-path|.  (If editing a file from scratch, typing |C-c C-n|
+% or selecting the |Reset Buffer| menu option from the |LaTeX| menu
+% after the buffer contents contain the directive to load this class
+% should be sufficient to load the relevant customizations).
 %
 % \StopEventually{\PrintChanges\PrintIndex}
 %
 % \section{Implementation}
 %
 % \subsection{The \textsf{gsexam} Package}
+% \label{s:package}
+%
+% The \textsf{gsexam} package is intended to be used, with
+% |\usepackage|, in any document where there is a need to include a
+% Goldsmiths exam.  An example might be a booklet collecting all of a
+% given year's papers, to give (or sell) to local students to help
+% with their revision.  Another example is a Subject Guide produced
+% for the University of London External Programme, which typically
+% includes a sample examination paper.  There is an accompanying
+% \textsf{gsexam} class file, intended for typesetting a single
+% examination paper such that the output can be presented to students
+% in an examination context, whose implementation is described in
+% section \ref{s:class} below.
+%
+% \subsubsection{\textsf{gsexam} Package Options}
+% \label{s:poptions}
 %
 %\iffalse
 %<*package>
 %\fi
+%
+% The \textsf{gsexam} package accepts a number of options, which can
+% be provided through the use of |\usepackage|.  In addition, the same
+% options are passed through from the class options if the
+% \textsf{gsexam} document class is used.
+% \begin{macro}{\if@answers}
+% \begin{macro}{\@answerstrue}
+% \begin{macro}{\@answersfalse}
+%   The |answers| and |noanswers| package options to the
+%   \textsf{gsexam} package set the |@answers| boolean to true and
+%   false respectively, which will controls the effect of the
+%   |answers| environment described in section \ref{s:answerimp} below.
 %    \begin{macrocode}
 \newif\if@answers
-
 \DeclareOption{answers}{\@answerstrue}
 \DeclareOption{noanswers}{\@answersfalse}
-
-% A boolean describing whether to check mark totals for each question,
-% on by default.
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\if@checked}
+% \begin{macro}{\@checkedtrue}
+% \begin{macro}{\@checkedfalse}
+%   The default behaviour of the |question| environment provided by
+%   the \textsf{gsexam} package is to check the total number of marks
+%   allocated for a question against the declared allocation.  The
+%   |unchecked| package option turns this checking off globally, by
+%   setting the |@checked| boolean to false.
+%    \begin{macrocode}
 \newif\if@checked
 \@checkedtrue
-% To turn off mark count checking, pass the unchecked class or style
-% argument.
 \DeclareOption{unchecked}{\@checkedfalse}
-
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% 
+% After declaring the options, we process them.
+%    \begin{macrocode}
 \ProcessOptions
-
-\RequirePackage{comment}
-% since comment is based on verbatim, this only works
-% if \begin{answer} and \end{answer} are the first things on their
-% respective lines
+%    \end{macrocode}
+% 
+% \subsubsection{The \texttt{answer} environment}
+% \label{s:answerimp}
 %
-% the accompanying |gsexam.el| file is sufficient to inform AUC\-\TeX
-% (the emacs mode for editing \LaTeX) about the need to indent
-% |\begin{answer}| and |\end{answer}| specially.  It can be loaded
-% directly, or will be dealt with automatically if installed in a
-% directory mentioned in the emacs variable |TeX-style-path|.  (If
-% editing a file from scratch, typing |C-c C-n| or selecting the
-% |Reset Buffer| menu option from the |LaTeX| menu after the buffer
-% contents contain the directive to load this class should be
-% sufficient to load the relevant customizations).
+% The |answer| environment is, effectively, a conditional comment.  If
+% the user has requested that answers should be included, then
+% material within an |answer| environment should be typeset in some
+% way; if a user has requested that answers not be included, then the
+% material within an |answer| environment should be elided.  (The
+% default setting for the |@answer| boolean which controls this is
+% marginally complicated; see section \ref{s:answerinc} and the
+% \textsf{gsexam} class documentation below.
+%
+% The |comment| package provides a simple mechanism to allow for
+% custom comment environments to be defined.
+%    \begin{macrocode}
+\RequirePackage{comment}
+%    \end{macrocode}
+% If the |@answers| boolean is true, we include the |answer| comments
+% in italics, beginning with a paragraph.  If the |@answers| boolean
+% is false, we simply exclude the contents of the |answer|
+% environment.
+%    \begin{macrocode}
 \if@answers
   \specialcomment{answer}{\begingroup\itshape\par}{\endgroup}
 \else
   \excludecomment{answer}
 \fi
-
-% we define a boolean to keep track of whether we have got to the end
+%    \end{macrocode}
+%
+% \subsubsection{The \texttt{question} environment}
+%
+% We define a |question| counter for enumerating questions.
+%    \begin{macrocode}
+\newcounter{question}
+%    \end{macrocode}
+%
+% \begin{macro}{\qmarks}
+%   We define a |qmarks| counter to tally the marks allocated for each
+%   question.  The |\qmarks| macro is responsible not only for
+%   typesetting the number of marks allocated for a part of a
+%   question, but also for incrementing the |qmarks| counter by the
+%   appropriate amount.
+%    \begin{macrocode}
+\newcounter{qmarks}[question]
+\newcommand{\qmarks}[1]{%
+  \unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}%
+  \addtocounter{qmarks}{#1}}
+%    \end{macrocode}
+% \end{macro}
+% The |question| environment typesets an individual question.  It
+% takes two arguments: an optional question title (defaulting to
+% empty), and a mandatory number of marks.
+%    \begin{macrocode}
+\newenvironment{question}[2][]{
+%    \end{macrocode}
+% Within a |question| environment, we ensure that labels and
+% references to enumerated |\item|s are appropriate: the labels are of
+% the form ``(a)'' and ``ii.'', while references generated with |\ref|
+% are ``(a)'' and a.(ii) repectively for first- and second-level
+% |\item|s.
+%    \begin{macrocode}
+  \def\theenumi{(\alph{enumi})}
+  \def\labelenumi{\theenumi}
+  \def\theenumii{\alph{enumi}.(\roman{enumii})}
+  \def\labelenumii{\roman{enumii}.}
+%    \end{macrocode}
+% We store the stated number of marks for this question in a local
+% variable.
+%    \begin{macrocode}
+  \def\qm@rks{#2}
+%    \end{macrocode}
+% We step the |question| counter, which also resets the |qmarks|
+% counter to zero
+%    \begin{macrocode}
+  \stepcounter{question}
+%    \end{macrocode}
+% The question itself is set as a |trivlist| with one item: the title,
+% if any, is set on the same line as the \textbf{Question} heading.
+%    \begin{macrocode}
+  \begin{trivlist}
+    \item[\bfseries Question \arabic{question}] {\qquad#1}
+      \begin{enumerate}
+%    \end{macrocode}
+% Within this and child |enumerate| environments, we request a separation 
+% of the text from the label by 0.5em.  Without this, the label and text 
+% abut directly on each other.
+%    \begin{macrocode}
+        \setlength{\labelsep}{.5em}
+  }
+  {\end{enumerate}\end{trivlist}%
+%    \end{macrocode}
+% At the end of the question, we check whether the value of the
+% |qmarks| counter is the same as the declared number of marks for
+% this question (stored in |\qm@arks|)
+% \begin{macrocode}
+\ifnum\qm@rks=\value{qmarks}
+%    \end{macrocode}
+% If it is, we do nothing.  Otherwise, we print a diagnostic message
+% to the output stream, and typeset a warning about the mark count
+% mismatch at the end of the question.
+%    \begin{macrocode}
+\else
+  \if@checked
+  \typeout{Mark mismatch in question \arabic{question}: 
+    expected \qm@rks, got \arabic{qmarks}}
+  \centering 
+  This question has a mark count mismatch: expected \textbf{\qm@rks},
+  got \textbf{\arabic{qmarks}}.\par
+  \fi
+\fi}
+%    \end{macrocode}
+%
+% \subsubsection{The \texttt{bscexam} environment}
+%
+% \begin{macro}{\if@examend}
+% \begin{macro}{\@examendtrue}
+% \begin{macro}{\@examendfalse}
+% We define a boolean to keep track of whether we have got to the end
 % of the exam or not.  It is reset (to false) at the beginning of each
 % |bscexam| environment.  At present, it's only used for generating
 % the appropriate page footer (which is handled by the
-% \textsf{gsexam} class)
+% \textsf{gsexam} class).
+%    \begin{macrocode}
 \newif\if@examend
-\newcounter{question}
-
-% The following commands simply store their argument in an internal
-% macro, for later use.
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\coursecode}
+% \begin{macro}{\coursetitle}
+% \begin{macro}{\examtime}
+% \begin{macro}{\examyear}
+% \begin{macro}{\subject}
+%   We also provide a number of commands to store metadata for a
+%   particular exam, which simply store their respective arguments in
+%   an internal macro for later use.  Note that the names of these
+%   commands are perhaps not ideal, given the Goldsmiths internal and
+%   the UoL External System nomenclatures: it is possible that
+%   |\subject| will be renamed to |\programme|, or similar.
+%    \begin{macrocode}
 \newcommand{\coursecode}[1]{\def\@coursecode{#1}}
+\newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
 \newcommand{\examyear}[1]{\def\@examyear{#1}}
 \newcommand{\subject}[1]{\def\@subject{#1}}
-\newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
 \newcommand{\examtime}[1]{\def\@examtime{#1}}
-
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\coverpage}
 % The |\coverpage| macro produces the cover page.  At the moment, only
-% the header is produced; we will eventually also implement rubrics.
+% the header is produced; we will soon also implement rubrics.
+%    \begin{macrocode}
 \newcommand{\coverpage}{\@coverhead\clearpage}
-
+%    \end{macrocode}
+% \end{macro}
+%
 % The |bscexam| environment surrounds a number of |question|
 % environments.
+%    \begin{macrocode}
 \newenvironment{bscexam}{
+%    \end{macrocode}
 % At the start of the exam, we ensure that the |\@examend| boolean
 % is set to false.
+%    \begin{macrocode}
   \@examendfalse
+%    \end{macrocode}
 % Exams start on a new page.
+%    \begin{macrocode}
   \clearpage
+%    \end{macrocode}
 % The first question is question 1.
+%    \begin{macrocode}
   \setcounter{question}{0}
+%    \end{macrocode}
+% We set some list-related lengths (the margins for the first two
+% enumeration levels, and the label width) to sensible values here.
+% These length definitions are local to the |bscexam| environment
+%    \begin{macrocode}
   \setlength{\leftmargini}{2.5em}
   \setlength{\leftmarginii}{1.5em}
   \setlength{\labelwidth}{\leftmargini}
+%    \end{macrocode}
+% \begin{macro}{\@coverhead}
+%   The |\@coverhead| macro, local to the |bscexam| environment,
+%   produces the top half of the cover page of an exam, with all the
+%   relevant fields formatted.
+%    \begin{macrocode}
   \def\@coverhead{
     \begin{flushleft}
       \Large \bfseries UNIVERSITY OF LONDON\\ [14pt]
@@ -187,109 +478,136 @@
       Date and time: \\ [14pt]
     \end{flushleft}
     \hrule\par\vskip12pt\relax}}
-  {%
+%    \end{macrocode}
+% \end{macro}
+%
 % At the end of the exam, we set |\@examend| to be true.
+%    \begin{macrocode}
+  {%
     \@examendtrue%
+%    \end{macrocode}
 % Then we clear the page, so that the any footer (such as that coming 
 % from the \textsf{gsexam} class with {\bf END OF EXAMINATION}) is set
 % within the scope of the |bscexam| environment.
+%    \begin{macrocode}
     \clearpage}
-
-\newcounter{qmarks}[question]
-\newcommand{\qmarks}[1]{\unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}\addtocounter{qmarks}{#1}}
-
-\newenvironment{question}[2][]{
-% Within a |question| environment, we ensure that labels and references 
-% to |enumerate| |\item|s are appropriate: the labels are of the form 
-% ``(a)'' and ``ii.'', while references generated with |\ref| are ``(a)''
-% and a.(ii) repectively for first- and second-level |\item|s.
-  \def\theenumi{(\alph{enumi})}
-  \def\labelenumi{\theenumi}
-  \def\theenumii{\alph{enumi}.(\roman{enumii})}
-  \def\labelenumii{\roman{enumii}.}
-  \def\qm@rks{#2}
-  \stepcounter{question}
-  \begin{trivlist}
-    \item[\bfseries Question \arabic{question}] {\qquad#1}
-      \begin{enumerate}
-% Within this and child |enumerate| environments, we request a separation 
-% of the text from the label by 0.5em.  Without this, the label and text 
-% abut directly on each other.
-        \setlength{\labelsep}{.5em}
-  }
-  {\end{enumerate}\end{trivlist}%
-\ifnum\qm@rks=\value{qmarks}
-\else
-  \if@checked
-  \typeout{Mark mismatch in question \arabic{question}: expected \qm@rks, got \arabic{qmarks}}
-  \centering 
-  This question has a mark count mismatch: expected \textbf{\qm@rks},
-  got \textbf{\arabic{qmarks}}.\par
-  \fi
-\fi}
 %    \end{macrocode}
+% 
 %\iffalse
 %</package>
 %\fi
 %
 % \subsection{The \textsf{gsexam} Class}
+% \label{s:class}
 %
 %\iffalse
 %<*class>
 %\fi
+%
+% The use of |\IfSubStringInString| below requires e\TeX, which we
+% therefore test for here.
 %    \begin{macrocode}
 \ifx\eTeXversion\@undefined
   \ClassError{gsexam}
   {This class requires eTeX}
   \expandafter\@@end
 \fi
-
+%    \end{macrocode}
+% \subsubsection{Class options}
+%
+% We need the |substr| package to implement our own class option handling
+%    \begin{macrocode}
+\RequirePackage{substr}
+%    \end{macrocode}
+% 
+% The |unchecked|, |answers| and |noanswers| class options are simply
+% passed straight through to the \textsf{gsexam} package, as described in
+% section \ref{s:poptions}.
+%    \begin{macrocode}
+\DeclareOption{unchecked}{\PassOptionsToPackage{unchecked}{gsexam}}
+\DeclareOption{answers}{\PassOptionsToPackage{answers}{gsexam}}
+\DeclareOption{noanswers}{\PassOptionsToPackage{noanswers}{gsexam}}
+%    \end{macrocode}
+% We provide |oneside| and |twoside| class options, defaulting to
+% two-sided layout.
+%    \begin{macrocode}
+\@twosidetrue
+\DeclareOption{oneside}{\@twosidefalse}
+\DeclareOption{twoside}{\@twosidetrue}
+%    \end{macrocode}
+% 
+% We also implement the default handling of the |answer| environment
+% by dispatching on the |\jobname| using the |substr| package.
+%    \begin{macrocode}
+\IfSubStringInString{\detokenize{answers}}{\jobname}%
+  {\PassOptionsToPackage{answers}{gsexam}}%
+  {}
+%    \end{macrocode}
+% That's all the options, which can now be processed.
+%    \begin{macrocode}
+\ProcessOptions
+%    \end{macrocode}
+%
+% \subsubsection{Implementation of functionality}
+%
+% The minimal requirements for a class are to provide a text height
+% and width, a definition for |\normalsize|, and a page numbering
+% directive, which we do here.  We must do this after the options have
+% been processed, in order that the |\@twoside| boolean has been set
+% as the user requests.
+%    \begin{macrocode}
 \setlength\paperheight{297mm}
 \setlength\paperwidth{210mm}
 \input{size10.clo}
 \pagenumbering{arabic}
-
-\RequirePackage{substr}
-
-\IfSubStringInString{\detokenize{answers}}{\jobname}{\PassOptionsToPackage{answers}{gsexam}}{}
-
-\newif\if@twoside
-\@twosidetrue
-
-\DeclareOption{oneside}{\@twosidefalse}
-\DeclareOption{twoside}{\@twosidetrue}
-
-\DeclareOption{answers}{\PassOptionsToPackage{answers}{gsexam}}
-\DeclareOption{noanswers}{\PassOptionsToPackage{noanswers}{gsexam}}
-\DeclareOption{unchecked}{\PassOptionsToPackage{unchecked}{gsexam}}
-
-\ProcessOptions
-
+%    \end{macrocode}
+%
+% We require a couple of other packages: |lastpage| to help with
+% setting page numbers in the form ``page $m$ of $n$'', and |geometry|
+% to set tolerably narrow margins (overriding those that were
+% generated from |size10.clo|)
+%    \begin{macrocode}
 \RequirePackage{lastpage}
 \RequirePackage[lmargin=1.25in,rmargin=1.25in]{geometry}
+%    \end{macrocode}
+% Finally, we also require our own \textsf{gsexam} package, which
+% implements the various environments.
+%    \begin{macrocode}
 \RequirePackage{gsexam}
-
-% The implementation of the default header and footer layout for
-% exams.  By default, there's nothing in the headers.
+%    \end{macrocode}
+%
+% Finally comes the implementation of the default header and footer
+% layout for exams.  By default, there's nothing in the headers.
+%    \begin{macrocode}
 \def\@evenhead{}
 \def\@oddhead{}
+%    \end{macrocode}
 % The footers contain examination information.  The left of the footer
 % contains a reference to the course code and the year of the
 % examination; the centre contains page numbering references (in the
 % form "page m of n", in an attempt to make it very clear whether
-% there are any pages missing); and the right contains END OF
-% EXAMINATION at the end of an exam, and otherwise TURN OVER on all
-% right-hand pages (which is \emph{all} pages if the |oneside| class
-% option is provided).
+% there are any pages missing); and the right contains \textbf{END OF
+%   EXAMINATION} at the end of an exam, and otherwise \textbf{TURN
+%   OVER} on all right-hand pages (which is \emph{all} pages if the
+% |oneside| class option is provided).
+%    \begin{macrocode}
 \def\@leftmark{\makebox[0in][l]{\bfseries \@coursecode\quad\@examyear}}
-\def\o@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\else TURN OVER\fi}}
+\def\o@rightmark{\makebox[0in][r]{\bfseries%
+    \if@examend END OF EXAMINATION\else TURN OVER\fi}}
 \if@twoside
-  \def\e@rightmark{\makebox[0in][r]{\bfseries \if@examend END OF EXAMINATION\fi}}
+  \def\e@rightmark{\makebox[0in][r]{\bfseries%
+      \if@examend END OF EXAMINATION\fi}}
 \else
   \def\e@rightmark\o@rightmark
 \fi
-\def\@evenfoot{\@leftmark \hfil page \thepage\ of \pageref{LastPage} \hfil \e@rightmark}
-\def\@oddfoot{\@leftmark \hfil page \thepage\ of \pageref{LastPage} \hfil \o@rightmark}
+\def\@evenfoot%
+  {\@leftmark \hfil%
+    page \thepage\ of \pageref{LastPage} \hfil%
+    \e@rightmark}
+\def\@oddfoot%
+  {\@leftmark \hfil%
+    page \thepage\ of \pageref{LastPage} \hfil%
+    \o@rightmark}
 %    \end{macrocode}
 %\iffalse
 %</class>
