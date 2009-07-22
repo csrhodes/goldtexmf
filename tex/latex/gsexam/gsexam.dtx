@@ -23,7 +23,7 @@
 %<class>\ProvidesClass{gsexam}
 %<package>\ProvidesPackage{gsexam}
 %<*class|package>
-  [2009/07/17 v0.2 Goldsmiths Exam]
+  [2009/07/22 v0.3 Goldsmiths Exam]
 %</class|package>
 %<*driver>
 \documentclass{ltxdoc}
@@ -38,6 +38,7 @@
 % 
 % \changes{v0.1}{2009/03/27}{Initial version}
 % \changes{v0.2}{2009/07/17}{Conversion to Documented \TeX}
+% \changes{v0.3}{2009/07/22}{Implementation of rubric generation}
 % \GetFileInfo{gsexam.dtx}
 %
 % \title{The \textsf{gsexam} package and class\thanks{This document
@@ -120,10 +121,24 @@
 % \subsection{The cover page}
 %
 % \DescribeEnv{bscexam} The |bscexam| environment encloses all of the
-% information related to a single examination paper.  Within the
-% |bscexam| environment, a number of macros are used to declare the
-% metadata for a given paper: \DescribeMacro{\coursecode}|\coursecode|
-% for the Goldsmiths and Departmental course codes;
+% information related to a single examination paper.  The environment
+% takes a single, optional argument (currently defaulting to
+% |onepart,nocalculators|), which should be a comma-separated list of
+% keywords describing the exam.  The currently-accepted keywords are:
+% \begin{itemize}
+% \item |onepart|: the examination is a full-unit exam in one part;
+% \item |twoparts|: the examination is a full-unit exam in two parts;
+% \item |halfunit|: the examination is a half-unit exam;
+% \item |calculators|: calculators (though not algebraic ones) are
+%   allowed;
+% \item |nocalculators|: no calculators are allowed;
+% \item |practical|: the examination has a practical component.
+% \end{itemize}
+% 
+% Within the |bscexam| environment, a number of macros are used to
+% declare the metadata for a given paper:
+% \DescribeMacro{\coursecode}|\coursecode| for the Goldsmiths and
+% Departmental course codes;
 % \DescribeMacro{\coursetitle}|\coursetitle| for the name of the
 % course; \DescribeMacro{\examtime}|\examtime| for the normal length
 % of the exam; \DescribeMacro{\examyear}|\examyear| for the year in
@@ -131,6 +146,12 @@
 % \DescribeMacro{\subject}|\subject| for the overall programme of
 % study of the exam.  (These names for these metadata macros are not
 % perfect, and may change in the near future.)
+%
+% The keywords given as the argument to the |bscexam| environment are
+% used to generate a rubric in a standard form automatically.  If for
+% whatever reason the automatically-generated rubric is not
+% appropriate, the \DescribeMacro{\rubric}|\rubric| command can be
+% used to specify a rubric for the examination.
 %
 % After all of these metadata fields are specified, the
 % \DescribeMacro{\coverpage}|\coverpage| macro sets the cover page of
@@ -152,7 +173,7 @@
 % refer to particular question parts: each part to be referred to
 % should have a unique \DescribeMacro{\label}|\label| attached to it,
 % and correcly-formatted references can then be generated (with the
-% usual caveat that two passes of the \LaTeX processor might be
+% usual caveat that two passes of the \LaTeX\ processor might be
 % needed) using \DescribeMacro{\ref}|\ref|.
 %
 % Within a question, the \DescribeMacro{\qmarks}|\qmarks| macro will
@@ -428,18 +449,95 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\coverpage}
-% The |\coverpage| macro produces the cover page.  At the moment, only
-% the header is produced; we will soon also implement rubrics.
+% \begin{macro}{\rubric}
+%   \changes{v0.3}{2009/07/22}{Added.}
+%
+%   The |\rubric| macro is used to supress the automatic generation of
+%   a rubric from keywords, instead causing its argument to be the
+%   entirety of the rubric (except for the prohibition of removal of
+%   the exam paper from the room).
 %    \begin{macrocode}
-\newcommand{\coverpage}{\@coverhead\clearpage}
+\newcommand{\rubric}[1]{
+  \def\rubric@kind{}
+  \def\rubric@calc{}
+  \def\rubric@explicit{#1}}
 %    \end{macrocode}
 % \end{macro}
 %
-% The |bscexam| environment surrounds a number of |question|
-% environments.
+% \begin{macro}{\coverpage}
+%   \changes{v0.3}{2009/07/22}{Implemented rubrics.}
+%
+%   The |\coverpage| macro produces the cover page.  The |\@coverhead|
+%   macro takes care of the header information, while the rest of the
+%   code typesets information specific to the kind of paper it is and
+%   whether calculators are allowed, or alternatively an explicit
+%   rubric given before |\coverpage| in the |bscexam| environment.
 %    \begin{macrocode}
-\newenvironment{bscexam}{
+\newcommand{\coverpage}{\@coverhead%
+  \begin{list}{}{
+      \setlength{\parsep}{2ex}
+      \setlength{\parindent}{0pt}
+      \setlength{\leftmargin}{0pt}
+      \setlength{\topsep}{5ex}}
+  \item
+    {\itshape\rubric@kind\par}
+    {\itshape\rubric@calc\par}
+    {\itshape\rubric@explicit\par}
+    \begin{center}
+      \textbf{THIS PAPER MUST NOT BE REMOVED\\
+        FROM THE EXAMINATION ROOM}
+    \end{center}
+  \end{list}\clearpage}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\rubric@onepart}
+% \begin{macro}{\rubric@twoparts}
+% \begin{macro}{\rubric@halfunit}
+%   The |\rubric@onepart|, |\rubric@twoparts| and |\rubric@halfunit|
+%   macros contain the standard rubric texts for a full-unit
+%   single-part exam, a full-unit two-part exam, and a half-unit exam
+%   respectively.
+%    \begin{macrocode}
+\newcommand{\rubric@onepart}{There are six questions in this paper.
+  You should answer no more than four questions.  Full marks will be
+  awarded for complete answers to a total of four questions.  Each
+  question carries 25 marks.  The marks for each part of a question
+  are indicated at the end of the part in \textup{[.]} brackets.\par
+  There are 100 marks available on this paper.}
+\newcommand{\rubric@twoparts}{This paper is in two parts: part A and
+  part B.  There are a total of three questions in each part.  You
+  should answer two questions from part A and two questions from part
+  B.  Your answers to part A and part B should be written in separate
+  answer books.\par Full marks will be awarded for complete answers to
+  a total of four questions, two from part A and two from part B.
+  Each question carries 25 marks.  The marks for each part of a
+  question are indicated at the end of the part in \textup{[.]}
+  brackets.\par
+  There are 100 marks available on this paper.}
+\newcommand{\rubric@halfunit}{There are five questions in this paper.
+  You should answer no more than three questions.  Full marks will be
+  awarded for complete answers to a total of three questions.  Each
+  question carries 25 marks.  The marks for each part of a question
+  are indicated at the end of the part in \textup{[.]} brackets.\par
+  There are 75 marks available on this paper.}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{environment}{bscexam}
+%   \changes{v0.3}{2009/07/22}{Added optional argument}
+%
+%   The |bscexam| environment surrounds a number of |question|
+%   environments.  It takes a single optional argument (defaulting to
+%   |onepart,nocalculators|), which should be a comma-separated list
+%   of keywords describing the kind of exam; these keywords are used
+%   to generate the rubric.  Exams not in the standard format can
+%   disable the automatic generation of a rubric, and provide one
+%   manually using the |\rubric| macro.
+%    \begin{macrocode}
+\newenvironment{bscexam}[1][onepart,nocalculators]{
 %    \end{macrocode}
 % At the start of the exam, we ensure that the |\@examend| boolean
 % is set to false.
@@ -462,6 +560,46 @@
   \setlength{\leftmarginii}{1.5em}
   \setlength{\labelwidth}{\leftmargini}
 %    \end{macrocode}
+%    \begin{macrocode}
+  \def\rubric@kind{}
+  \def\rubric@calc{}
+  \def\rubric@explicit{}
+  \@for\opt@temp:=#1\do{
+    \def\opt@foo{onepart}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@kind{\rubric@onepart}
+    \fi
+    \def\opt@foo{twoparts}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@kind{\rubric@twoparts}
+    \fi
+    \def\opt@foo{halfunit}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@kind{\rubric@halfunit}
+    \fi
+    \def\opt@foo{calculators}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@calc{Electronic calculators must
+      not be programmed prior to the examination.  Calculators which
+      display graphics, text or algebraic equations are not allowed.}
+    \fi 
+    \def\opt@foo{nocalculators}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@calc{No calculators should be used.}
+    \fi
+    \def\opt@foo{practical}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@calc{This is a practical examination; each answer
+      requiring code or other computational material should be named
+      according to question number, part and sub-part: for example,
+      \textup{\texttt{Q5\_b\_2.pde}} for a Processing sketch in answer
+      to part (b) sub-part (ii) of question 5.  Save your answer to
+      the exam submission folder.  You are responsible for ensuring
+      that your answers have been saved in the correct location.}
+    \fi
+  }
+%    \end{macrocode}
+% 
 % \begin{macro}{\@coverhead}
 %   The |\@coverhead| macro, local to the |bscexam| environment,
 %   produces the top half of the cover page of an exam, with all the
@@ -492,6 +630,7 @@
 %    \begin{macrocode}
     \clearpage}
 %    \end{macrocode}
+% \end{environment}
 % 
 %\iffalse
 %</package>
@@ -558,7 +697,7 @@
 %    \begin{macrocode}
 \setlength\paperheight{297mm}
 \setlength\paperwidth{210mm}
-\input{size10.clo}
+\input{size11.clo}
 \pagenumbering{arabic}
 %    \end{macrocode}
 %
