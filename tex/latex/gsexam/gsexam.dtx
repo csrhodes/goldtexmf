@@ -161,7 +161,7 @@
 %
 % \DescribeEnv{question} The |question| environment takes two
 % arguments.  The first, the title of the question, is optional (and
-% so if given is passed in square brackets, as is usual in \LaTeX).
+% so if present is given in square brackets, as is usual in \LaTeX).
 % The second argument is mandatory, and is the number of marks
 % allocated for that question.
 %
@@ -188,7 +188,9 @@
 % answers to questions.  Under default operation, the contents of the
 % |answer| environment are simply discarded; however, using the
 % |answers| class option, or by other means (see section
-% \ref{s:answerinc} below).
+% \ref{s:answerinc} below) the contents of the |answer| environment
+% will be typeset, in place, in the italic shape font for the
+% document.
 %
 % \subsubsection{Default inclusion of \texttt{answer} environments}
 % \label{s:answerinc}
