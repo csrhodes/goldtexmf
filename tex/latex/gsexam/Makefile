@@ -12,3 +12,6 @@ include ../../../tools/latex-doc.mk
 
 test: $(NAME).cls $(NAME).sty test.tex
 	latex test
+	latex test
+	latex -jobname test-answers test
+	latex -jobname test-answers test
