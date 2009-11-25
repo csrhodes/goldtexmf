@@ -1,10 +1,10 @@
-CLASS=esexamreport
+NAME=esexamreport
 
 DOCSTRIP=latex
 PDFLATEX=pdflatex
 MAKEINDEX=makeindex
 
-all: $(CLASS).cls $(CLASS).pdf
+all: $(NAME).cls $(NAME).pdf $(NAME)-internals.pdf
 
 include ../../../tools/latex-class.mk
 include ../../../tools/latex-clean.mk

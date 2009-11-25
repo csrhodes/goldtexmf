@@ -4,7 +4,7 @@ DOCSTRIP=xelatex
 PDFLATEX=xelatex
 MAKEINDEX=makeindex
 
-all: $(NAME).cls $(NAME).pdf
+all: $(NAME).cls $(NAME).pdf $(NAME)-internals.pdf
 
 include ../../../tools/latex-class.mk
 include ../../../tools/latex-clean.mk
