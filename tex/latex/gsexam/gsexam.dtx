@@ -23,7 +23,7 @@
 %<class>\ProvidesClass{gsexam}
 %<package>\ProvidesPackage{gsexam}
 %<*class|package>
-  [2009/07/22 v0.3 Goldsmiths Exam]
+  [2009/12/11 v0.4 Goldsmiths Exam]
 %</class|package>
 %<*driver>
 \documentclass{ltxdoc}
@@ -703,6 +703,19 @@
 \pagenumbering{arabic}
 %    \end{macrocode}
 %
+% In addition to the minimal requirements for \LaTeX\ class files, we
+% need to customize some other lengths to reasonable default values so
+% that the |array| and |tabular| environments behave as a user might
+% expect (rather than leaving no space between items and having
+% zero-width rules).  \changes{v0.4}{2009/12/11}{Defined various
+%   lengths to non-zero values.}
+%    \begin{macrocode}
+\setlength\arraycolsep{5\p@}
+\setlength\tabcolsep{6\p@}
+\setlength\arrayrulewidth{.4\p@}
+\setlength\doublerulesep{2\p@}
+%    \end{macrocode}
+% 
 % We require a couple of other packages: |lastpage| to help with
 % setting page numbers in the form ``page $m$ of $n$'', and |geometry|
 % to set tolerably narrow margins (overriding those that were
