@@ -364,6 +364,14 @@
   \def\theenumii{\alph{enumi}.(\roman{enumii})}
   \def\labelenumii{\roman{enumii}.}
 %    \end{macrocode}
+% We also define some bullets for first- and second-level itemized
+% |\item|s for use in unordered lists.
+% \changes{v0.4}{2009/12/11}{Defined labels for first- and
+%   second-level itemize}
+%    \begin{macrocode}
+  \def\labelitemi{\textbullet}
+  \def\labelitemii{\normalfont\bfseries \textendash}
+%    \end{macrocode}
 % We store the stated number of marks for this question in a local
 % variable.
 %    \begin{macrocode}
