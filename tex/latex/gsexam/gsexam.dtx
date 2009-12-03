@@ -347,9 +347,10 @@
   \addtocounter{qmarks}{#1}}
 %    \end{macrocode}
 % \end{macro}
-% The |question| environment typesets an individual question.  It
-% takes two arguments: an optional question title (defaulting to
-% empty), and a mandatory number of marks.
+% \begin{environment}{question}
+%   The |question| environment typesets an individual question.  It
+%   takes two arguments: an optional question title (defaulting to
+%   empty), and a mandatory number of marks.
 %    \begin{macrocode}
 \newenvironment{question}[2][]{
 %    \end{macrocode}
@@ -417,7 +418,7 @@
   \fi
 \fi}
 %    \end{macrocode}
-%
+% \end{environment}
 % \subsubsection{The \texttt{bscexam} environment}
 %
 % \begin{macro}{\if@examend}
