@@ -107,7 +107,12 @@
 % or for the External System of the University of London's Summer
 % session.  In those circumstances, users should use the
 % \textsf{gsexam} \emph{class}, by providing |gsexam| as the argument
-% to the |\documentclass| \LaTeX\ directive.
+% to the |\documentclass| \LaTeX\ directive.  While the exam paper is
+% still under development, the generated document will be watermarked
+% with the current date, in order to minimize the risk of the wrong
+% version of the paper being passed to the Examinations Office; to
+% remove the watermark, pass the |final| class option to the
+% \textsf{gsexam} class.
 %
 % Under certain circumstances, such as the provision of a sample
 % examination paper within a University of London External System
@@ -665,9 +670,12 @@
 %    \end{macrocode}
 % \subsubsection{Class options}
 %
-% We need the |substr| package to implement our own class option handling
+% We need the |substr| package to implement our own class option
+% handling, and loading the |draftwatermark| package at this stage
+% simplifies handling the |final| class option.
 %    \begin{macrocode}
 \RequirePackage{substr}
+\RequirePackage{draftwatermark}
 %    \end{macrocode}
 % 
 % The |unchecked|, |answers| and |noanswers| class options are simply
@@ -692,6 +700,17 @@
 \IfSubStringInString{\detokenize{answers}}{\jobname}%
   {\PassOptionsToPackage{answers}{gsexam}}%
   {}
+%    \end{macrocode}
+%
+% The output should be watermarked with the current date, unless the
+% |final| class option is passed.
+% \changes{v0.4}{2009/12/11}{Watermark non-final drafts.}
+%    \begin{macrocode}
+\SetWatermarkAngle{54}
+\SetWatermarkText{\textbf{DRAFT \number\year-\two@digits\month-\two@digits\day}}
+\SetWatermarkFontSize{24.88pt}
+\SetWatermarkScale{3.5}
+\DeclareOption{final}{\SetWatermarkText{}}
 %    \end{macrocode}
 % That's all the options, which can now be processed.
 %    \begin{macrocode}
