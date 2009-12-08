@@ -743,7 +743,22 @@
 \setlength\arrayrulewidth{.4\p@}
 \setlength\doublerulesep{2\p@}
 %    \end{macrocode}
-% 
+%
+% Some other functionality that's not strictly needed: the old font
+% commands such as |\rm|, |\sf| and |\tt| need special support from
+% the class file; they're not built-in font commands; they can be
+% convenient, however, so we support them.
+% \changes{v0.4}{2009/12/11}{Defined old font commands.}
+%    \begin{macrocode}
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+%    \end{macrocode}
+%
 % We require a couple of other packages: |lastpage| to help with
 % setting page numbers in the form ``page $m$ of $n$'', and |geometry|
 % to set tolerably narrow margins (overriding those that were
