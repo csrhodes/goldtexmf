@@ -372,7 +372,7 @@
 %    \end{macrocode}
 % We also define some bullets for first- and second-level itemized
 % |\item|s for use in unordered lists.
-% \changes{v0.4}{2009/12/11}{Defined labels for first- and
+% \changes{v0.4}{2009/12/18}{Defined labels for first- and
 %   second-level itemize}
 %    \begin{macrocode}
   \def\labelitemi{\textbullet}
@@ -703,14 +703,17 @@
 %    \end{macrocode}
 %
 % The output should be watermarked with the current date, unless the
-% |final| class option is passed.
-% \changes{v0.4}{2009/12/11}{Watermark non-final drafts.}
+% |final| class option is passed; if answers are being included, then
+% there should also be a watermark (to prevent the version with
+% answers included being handed to the Examinations Office for
+% copying).  \changes{v0.4}{2009/12/18}{Watermark non-final drafts and
+%   final answers.}
 %    \begin{macrocode}
 \SetWatermarkAngle{54}
 \SetWatermarkText{\textbf{DRAFT \number\year-\two@digits\month-\two@digits\day}}
 \SetWatermarkFontSize{24.88pt}
 \SetWatermarkScale{3.5}
-\DeclareOption{final}{\SetWatermarkText{}}
+\DeclareOption{final}{\SetWatermarkText{\if@answers\textbf{ANSWERS}\fi}}
 %    \end{macrocode}
 % That's all the options, which can now be processed.
 %    \begin{macrocode}
@@ -735,7 +738,7 @@
 % need to customize some other lengths to reasonable default values so
 % that the |array| and |tabular| environments behave as a user might
 % expect (rather than leaving no space between items and having
-% zero-width rules).  \changes{v0.4}{2009/12/11}{Defined various
+% zero-width rules).  \changes{v0.4}{2009/12/18}{Defined various
 %   lengths to non-zero values.}
 %    \begin{macrocode}
 \setlength\arraycolsep{5\p@}
@@ -748,7 +751,7 @@
 % commands such as |\rm|, |\sf| and |\tt| need special support from
 % the class file; they're not built-in font commands; they can be
 % convenient, however, so we support them.
-% \changes{v0.4}{2009/12/11}{Defined old font commands.}
+% \changes{v0.4}{2009/12/18}{Defined old font commands.}
 %    \begin{macrocode}
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
 \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
