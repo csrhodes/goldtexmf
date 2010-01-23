@@ -23,7 +23,7 @@
 %<class>\ProvidesClass{gsexam}
 %<package>\ProvidesPackage{gsexam}
 %<*class|package>
-  [2009/01/29 v0.5 Goldsmiths Exam]
+  [2010/01/29 v0.5 Goldsmiths Exam]
 %</class|package>
 %<*driver>
 \documentclass{ltxdoc}
@@ -39,7 +39,8 @@
 % \changes{v0.1}{2009/03/27}{Initial version}
 % \changes{v0.2}{2009/07/17}{Conversion to Documented \TeX}
 % \changes{v0.3}{2009/07/22}{Implementation of rubric generation}
-% \changes{v0.3}{2009/12/11}{Various fixes}
+% \changes{v0.4}{2009/12/18}{Various fixes}
+% \changes{v0.5}{2010/01/29}{Improve environment support}
 % \GetFileInfo{gsexam.dtx}
 %
 % \title{The \textsf{gsexam} package and class\thanks{This document
@@ -146,12 +147,13 @@
 % \DescribeMacro{\coursecode}|\coursecode| for the Goldsmiths and
 % Departmental course codes;
 % \DescribeMacro{\coursetitle}|\coursetitle| for the name of the
-% course; \DescribeMacro{\examtime}|\examtime| for the normal length
-% of the exam; \DescribeMacro{\examyear}|\examyear| for the year in
-% which the exam is to be taken; and
-% \DescribeMacro{\subject}|\subject| for the overall programme of
-% study of the exam.  (These names for these metadata macros are not
-% perfect, and may change in the near future.)
+% course; \DescribeMacro{\examtime}|\examtime| to override the normal
+% length of the exam (three hours for a full-unit exam, two hours
+% fifteen minutes for a half-unit);
+% \DescribeMacro{\examyear}|\examyear| for the year in which the exam
+% is to be taken; and \DescribeMacro{\subject}|\subject| for the
+% overall programme of study of the exam.  (These names for these
+% metadata macros are not perfect, and may change in the near future.)
 %
 % The keywords given as the argument to the |bscexam| environment are
 % used to generate a rubric in a standard form automatically.  If for
@@ -445,8 +447,9 @@
 % \begin{macro}{\coursecode}
 % \begin{macro}{\coursetitle}
 % \begin{macro}{\examtime}
+% \changes{v0.5}{2010/01/23}{default exam time from exam keywords}
 % \begin{macro}{\examyear}
-% \begin{macro}{\subject}
+% \begin{macro}{\subject}  
 %   We also provide a number of commands to store metadata for a
 %   particular exam, which simply store their respective arguments in
 %   an internal macro for later use.  Note that the names of these
@@ -585,14 +588,17 @@
     \def\opt@foo{onepart}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@onepart}
+    \def\@examtime{3 hours}
     \fi
     \def\opt@foo{twoparts}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@twoparts}
+    \def\@examtime{3 hours}
     \fi
     \def\opt@foo{halfunit}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@halfunit}
+    \def\@examtime{2 hours 15 minutes}
     \fi
     \def\opt@foo{calculators}
     \ifx\opt@temp\opt@foo
