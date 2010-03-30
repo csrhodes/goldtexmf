@@ -104,9 +104,11 @@
 %
 % The \DescribeMacro{\subject}|\subject| macro specifies the subject
 % of the memo, which will be rendered both on the front page and in
-% the heading of any subsequent pages.  The date is taken from the
-% standard \LaTeX\ macro \DescribeMacro{\today}|\today|, which should
-% be overridden if necessary using |\renewcommand|.
+% the heading of any subsequent pages; the optional argument to the
+% |\subject| macro can be used to specify a shorter version for the
+% page headings.  The date is taken from the standard \LaTeX\ macro
+% \DescribeMacro{\today}|\today|, which should be overridden if
+% necessary using |\renewcommand|.
 %
 % The first thing in the mainmatter, following |\begin{document}|,
 % should be \DescribeMacro{\maketitle}|\maketitle|, which is
@@ -272,10 +274,18 @@
 %   the |\@subject| variable, overwriting any previous definition.  In
 %   future, we may choose to enforce only having one subject in a memo
 %   by causing an error when processing a document with multiple
-%   definitions.
+%   definitions.  If an optional argument is present, its value is
+%   assigned to the |\@ssubject| variable; otherwise, the mandatory
+%   argument's value is used.
 %    \begin{macrocode}
-\newcommand{\subject}[1]{%
-  \edef\@subject{#1}}
+\newcommand{\subject}[2][]{%
+  \begingroup\def\testtheargument{#1}\expandafter\endgroup
+  \ifx\testtheargument\@empty 
+  \edef\@ssubject{#2}
+  \else
+  \edef\@ssubject{#1}
+  \fi
+  \edef\@subject{#2}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -300,7 +310,7 @@
 % page numbering (in the form ``p. $m$ of $n$'')
 %    \begin{macrocode}
   \afterpage{
-    \lhead{\footnotesize \@subject}
+    \lhead{\footnotesize \@ssubject}
     \chead{\footnotesize \today}
     \rhead{\footnotesize p.~\thepage\ of \pageref{LastPage}}
   }
