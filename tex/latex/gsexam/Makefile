@@ -12,6 +12,7 @@ dist:
 
 release: $(NAME).cls $(NAME).sty $(NAME).pdf test.tex Makefile
 	tar zcf $(NAME)-`date +"%Y%m%d"`.tar.gz --transform 's|^|'$(NAME)-`date +"%Y%m%d"`/'|' $^
+	(tar zxf $(NAME)-`date +"%Y%m%d"`.tar.gz && zip -qr $(NAME)-`date +"%Y%m%d"`.zip $(NAME)-`date +"%Y%m%d"` && rm -rf ./$(NAME)-`date +"%Y%m%d"`)
 
 -include ../../../tools/latex-class-style.mk
 -include ../../../tools/latex-clean.mk
