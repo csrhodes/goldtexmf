@@ -19,7 +19,7 @@ release: $(NAME).cls $(NAME).sty $(NAME).pdf test.tex Makefile
 -include ../../../tools/latex-doc.mk
 
 test: $(NAME).cls $(NAME).sty test.tex
-	latex test
-	latex test
-	latex -jobname test-answers test
-	latex -jobname test-answers test
+	pdflatex test
+	pdflatex test
+	pdflatex -jobname test-answers test
+	pdflatex -jobname test-answers test
