@@ -434,7 +434,7 @@
 %    \begin{macrocode}
 \else
   \if@checked
-  \typeout{Mark mismatch in question \arabic{question}: 
+  \typeout{gsexam warning: mark mismatch in question \arabic{question}: 
     expected \qm@rks, got \arabic{qmarks}}
   \centering 
   This question has a mark count mismatch: expected \textbf{\qm@rks},
@@ -475,7 +475,7 @@
 \newcommand{\coursecode}[1]{\def\@coursecode{#1}}
 \newcommand{\coursetitle}[1]{\def\@coursetitle{#1}}
 \newcommand{\examyear}[1]{\def\@examyear{#1}}
-\newcommand{\subject}[1]{\typeout{The \string\subject{} macro is deprecated.}\def\@subject{#1}}
+\newcommand{\subject}[1]{\typeout{gsexam warning: the \string\subject{} macro is deprecated.}\def\@subject{#1}} %
 \newcommand{\examtime}[1]{\def\@examtime{#1}}
 %    \end{macrocode}
 % \end{macro}
@@ -657,19 +657,19 @@
     \def\opt@foo{onepart}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@onepart}
-    \typeout{The onepart option to bscexam is deprecated}
+    \typeout{gsexam warning: the onepart option to bscexam is deprecated}
     \def\@examtime{3 hours}
     \fi
     \def\opt@foo{twoparts}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@twoparts}
-    \typeout{The twoparts option to bscexam is deprecated}
+    \typeout{gsexam warning: the twoparts option to bscexam is deprecated}
     \def\@examtime{3 hours}
     \fi
     \def\opt@foo{halfunit}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@halfunit}
-    \typeout{The halfunit option to bscexam is deprecated}
+    \typeout{gsexam warning: the halfunit option to bscexam is deprecated}
     \def\@examtime{2 hours 15 minutes}
     \fi
     \def\opt@foo{calculators}
