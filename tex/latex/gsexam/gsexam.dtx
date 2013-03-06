@@ -44,6 +44,7 @@
 % \changes{v0.4}{2009/12/18}{Various fixes}
 % \changes{v0.5}{2010/01/29}{Improve environment support}
 % \changes{v0.6}{2013/01/28}{Incorporate new exam formats}
+% \changes{v0.7}{2013/03/06}{Fix handling of watermark in answers}
 % \GetFileInfo{gsexam.dtx}
 %
 % \title{The \textsf{gsexam} package and class\thanks{This document
@@ -753,10 +754,12 @@
 %
 % We need the |substr| package to implement our own class option
 % handling, and loading the |draftwatermark| package at this stage
-% simplifies handling the |final| class option.
+% simplifies handling the |final| class option (though we require the
+% |stamp| option in order to handle |final| ourselves).
+% \changes{v0.7}{2013/03/06}{Use stamp option for draftwatermark.}
 %    \begin{macrocode}
 \RequirePackage{substr}
-\RequirePackage{draftwatermark}
+\RequirePackage[stamp]{draftwatermark}
 %    \end{macrocode}
 % 
 % The |unchecked|, |answers| and |noanswers| class options are simply
