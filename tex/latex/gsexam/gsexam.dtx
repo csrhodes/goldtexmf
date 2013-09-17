@@ -340,13 +340,18 @@
 %    \begin{macrocode}
 \RequirePackage{comment}
 %    \end{macrocode}
+% Our custom comments will be in a different colour to help them to
+% stand out from the main exam text.
+%    \begin{macrocode}
+\RequirePackage{color}
+%    \end{macrocode}
 % If the |@answers| boolean is true, we include the |answer| comments
-% in italics, beginning with a paragraph.  If the |@answers| boolean
-% is false, we simply exclude the contents of the |answer|
+% in blue italics, beginning with a paragraph.  If the |@answers|
+% boolean is false, we simply exclude the contents of the |answer|
 % environment.
 %    \begin{macrocode}
 \if@answers
-  \specialcomment{answer}{\begingroup\itshape\par}{\endgroup}
+  \specialcomment{answer}{\begingroup\itshape\color{blue}\par}{\endgroup}
 \else
   \excludecomment{answer}
 \fi
