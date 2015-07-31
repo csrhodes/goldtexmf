@@ -368,100 +368,6 @@
 \fi
 %    \end{macrocode}
 %
-% \subsubsection{The \texttt{question} environment}
-%
-% We define a |question| counter for enumerating questions.
-%    \begin{macrocode}
-\newcounter{question}
-%    \end{macrocode}
-%
-% \begin{macro}{\qmarks}
-%   We define a |qmarks| counter to tally the marks allocated for each
-%   question.  The |\qmarks| macro is responsible not only for
-%   typesetting the number of marks allocated for a part of a
-%   question, but also for incrementing the |qmarks| counter by the
-%   appropriate amount (and the |pmarks| counter, defined below).
-%    \begin{macrocode}
-\newcounter{qmarks}[question]
-\newcommand{\qmarks}[1]{%
-  \unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}%
-  \addtocounter{qmarks}{#1}
-  \addtocounter{pmarks}{#1}}
-%    \end{macrocode}
-% \end{macro}
-% \begin{environment}{question}
-%   The |question| environment typesets an individual question.  It
-%   takes two arguments: an optional question title (defaulting to
-%   empty), and a mandatory number of marks.
-%    \begin{macrocode}
-\newenvironment{question}[2][]{
-%    \end{macrocode}
-% Within a |question| environment, we ensure that labels and
-% references to enumerated |\item|s are appropriate: the labels are of
-% the form ``(a)'' and ``ii.'', while references generated with |\ref|
-% are ``(a)'' and a.(ii) repectively for first- and second-level
-% |\item|s.
-%    \begin{macrocode}
-  \def\theenumi{(\alph{enumi})}
-  \def\labelenumi{\theenumi}
-  \def\theenumii{\alph{enumi}.(\roman{enumii})}
-  \def\labelenumii{\roman{enumii}.}
-%    \end{macrocode}
-% We also define some bullets for first- and second-level itemized
-% |\item|s for use in unordered lists.
-% \changes{v0.4}{2009/12/18}{Defined labels for first- and
-%   second-level itemize}
-%    \begin{macrocode}
-  \def\labelitemi{\textbullet}
-  \def\labelitemii{\normalfont\bfseries \textendash}
-%    \end{macrocode}
-% We store the stated number of marks for this question in a local
-% variable.
-%    \begin{macrocode}
-  \def\qm@rks{#2}
-%    \end{macrocode}
-% We step the |question| counter, which also resets the |qmarks|
-% counter to zero, and the |pqs| counter.
-%    \begin{macrocode}
-  \stepcounter{question}
-  \stepcounter{pqs}
-%    \end{macrocode}
-% The question itself is set as a |trivlist| with one item: the title,
-% if any, is set on the same line as the \textbf{Question} heading.
-%    \begin{macrocode}
-  \begin{trivlist}
-    \item[\bfseries Question \arabic{question}] {\qquad#1}
-      \begin{enumerate}
-%    \end{macrocode}
-% Within this and child |enumerate| environments, we request a separation 
-% of the text from the label by 0.5em.  Without this, the label and text 
-% abut directly on each other.
-%    \begin{macrocode}
-        \setlength{\labelsep}{.5em}
-  }
-  {\end{enumerate}\end{trivlist}%
-%    \end{macrocode}
-% At the end of the question, we check whether the value of the
-% |qmarks| counter is the same as the declared number of marks for
-% this question (stored in |\qm@arks|)
-% \begin{macrocode}
-  \ifnum\qm@rks=\value{qmarks}
-%    \end{macrocode}
-% If it is, we do nothing.  Otherwise, we print a diagnostic message
-% to the output stream, and typeset a warning about the mark count
-% mismatch at the end of the question.
-%    \begin{macrocode}
-  \else
-    \if@checked
-    \typeout{gsexam warning: mark mismatch in question \arabic{question}:
-      expected \qm@rks, got \arabic{qmarks}}
-    \centering
-    This question has a mark count mismatch: expected \textbf{\qm@rks},
-    got \textbf{\arabic{qmarks}}.\par
-    \fi
-  \fi}
-%    \end{macrocode}
-% \end{environment}
 % \subsubsection{The \texttt{part} environment}
 %
 % We define a |part| counter for enumerating parts.
@@ -470,7 +376,7 @@
 %    \end{macrocode}
 %
 % We define a |pmarks| counter to tally the marks allocated for each
-% part, updated by the |\qmarks| macro, above, and a |pqs| counter to
+% part, updated by the |\qmarks| macro below, and a |pqs| counter to
 % count how many questions there have been in the part.
 %    \begin{macrocode}
 \newcounter{pmarks}[part]
@@ -550,6 +456,100 @@
     This part has a mark count mismatch: expected \textbf{\pm@rks},
     got \textbf{\the\numexpr \value{pmarks} * \p@nqtodos / \p@nqs\relax}.
     \par
+    \fi
+  \fi}
+%    \end{macrocode}
+% \end{environment}
+% \subsubsection{The \texttt{question} environment}
+%
+% We define a |question| counter for enumerating questions.
+%    \begin{macrocode}
+\newcounter{question}
+%    \end{macrocode}
+%
+% \begin{macro}{\qmarks}
+%   We define a |qmarks| counter to tally the marks allocated for each
+%   question.  The |\qmarks| macro is responsible not only for
+%   typesetting the number of marks allocated for a part of a
+%   question, but also for incrementing the |qmarks| and |pmarks|
+%   counters by the appropriate amount.
+%    \begin{macrocode}
+\newcounter{qmarks}[question]
+\newcommand{\qmarks}[1]{%
+  \unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}%
+  \addtocounter{qmarks}{#1}
+  \addtocounter{pmarks}{#1}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{environment}{question}
+%   The |question| environment typesets an individual question.  It
+%   takes two arguments: an optional question title (defaulting to
+%   empty), and a mandatory number of marks.
+%    \begin{macrocode}
+\newenvironment{question}[2][]{
+%    \end{macrocode}
+% Within a |question| environment, we ensure that labels and
+% references to enumerated |\item|s are appropriate: the labels are of
+% the form ``(a)'' and ``ii.'', while references generated with |\ref|
+% are ``(a)'' and a.(ii) repectively for first- and second-level
+% |\item|s.
+%    \begin{macrocode}
+  \def\theenumi{(\alph{enumi})}
+  \def\labelenumi{\theenumi}
+  \def\theenumii{\alph{enumi}.(\roman{enumii})}
+  \def\labelenumii{\roman{enumii}.}
+%    \end{macrocode}
+% We also define some bullets for first- and second-level itemized
+% |\item|s for use in unordered lists.
+% \changes{v0.4}{2009/12/18}{Defined labels for first- and
+%   second-level itemize}
+%    \begin{macrocode}
+  \def\labelitemi{\textbullet}
+  \def\labelitemii{\normalfont\bfseries \textendash}
+%    \end{macrocode}
+% We store the stated number of marks for this question in a local
+% variable.
+%    \begin{macrocode}
+  \def\qm@rks{#2}
+%    \end{macrocode}
+% We step the |question| counter, which also resets the |qmarks|
+% counter to zero, and the |pqs| counter.
+%    \begin{macrocode}
+  \stepcounter{question}
+  \stepcounter{pqs}
+%    \end{macrocode}
+% The question itself is set as a |trivlist| with one item: the title,
+% if any, is set on the same line as the \textbf{Question} heading.
+%    \begin{macrocode}
+  \begin{trivlist}
+    \item[\bfseries Question \arabic{question}] {\qquad#1}
+      \begin{enumerate}
+%    \end{macrocode}
+% Within this and child |enumerate| environments, we request a separation 
+% of the text from the label by 0.5em.  Without this, the label and text 
+% abut directly on each other.
+%    \begin{macrocode}
+        \setlength{\labelsep}{.5em}
+  }
+  {\end{enumerate}\end{trivlist}%
+%    \end{macrocode}
+% At the end of the question, we check whether the value of the
+% |qmarks| counter is the same as the declared number of marks for
+% this question (stored in |\qm@arks|)
+% \begin{macrocode}
+  \ifnum\qm@rks=\value{qmarks}
+%    \end{macrocode}
+% If it is, we do nothing.  Otherwise, we print a diagnostic message
+% to the output stream, and typeset a warning about the mark count
+% mismatch at the end of the question.
+%    \begin{macrocode}
+  \else
+    \if@checked
+    \typeout{gsexam warning: mark mismatch in question \arabic{question}:
+      expected \qm@rks, got \arabic{qmarks}}
+    \centering
+    This question has a mark count mismatch: expected \textbf{\qm@rks},
+    got \textbf{\arabic{qmarks}}.\par
     \fi
   \fi}
 %    \end{macrocode}
