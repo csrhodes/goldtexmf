@@ -421,9 +421,10 @@
   \def\qm@rks{#2}
 %    \end{macrocode}
 % We step the |question| counter, which also resets the |qmarks|
-% counter to zero
+% counter to zero, and the |pqs| counter.
 %    \begin{macrocode}
   \stepcounter{question}
+  \stepcounter{pqs}
 %    \end{macrocode}
 % The question itself is set as a |trivlist| with one item: the title,
 % if any, is set on the same line as the \textbf{Question} heading.
@@ -468,26 +469,31 @@
 \newcounter{part}
 %    \end{macrocode}
 %
-%   We define a |pmarks| counter to tally the marks allocated for each
-%   part, updated by the |\qmarks| macro, above.
+% We define a |pmarks| counter to tally the marks allocated for each
+% part, updated by the |\qmarks| macro, above, and a |pqs| counter to
+% count how many questions there have been in the part.
 %    \begin{macrocode}
 \newcounter{pmarks}[part]
+\newcounter{pqs}[part]
 %    \end{macrocode}
 % \begin{environment}{part}
 %   The |question| environment typesets an individual question.  It
-%   takes two arguments: an optional part title (defaulting to empty),
-%   and a mandatory number of marks, which is the number of marks in
-%   \textit{all} questions. %FIXME later
+%   takes four arguments: an optional part title (defaulting to
+%   empty), and three mandatory arguments: the number of questions in
+%   the part; the number of questions in the part that students should
+%   attempt; and the number of marks available in the part.
 %    \begin{macrocode}
-\newenvironment{part}[2][]{
+\newenvironment{part}[4][]{
 %    \end{macrocode}
-% We store the stated number of marks for this part in a local
-% variable.
+% We store the stated number of questions, attempt quota and the
+% number of marks for this part in local variables.
 %    \begin{macrocode}
-  \def\pm@rks{#2}
+  \def\p@nqs{#2}
+  \def\p@nqtodos{#3}
+  \def\pm@rks{#4}
 %    \end{macrocode}
 % We step the |part| counter, which also resets the |pmarks|
-% counter to zero
+% and |pqs| counters to zero
 %    \begin{macrocode}
   \stepcounter{part}
 %    \end{macrocode}
@@ -498,17 +504,38 @@
   \clearpage
   \vspace*{\fill}
   \begin{center}
-    {\huge \bf Part \Alph{part}}\\
+    {\huge \bf Part \Alph{part}\\[1ex]}
     {\Large \bf #1}
   \end{center}
   \vfill
   \clearpage}
   {
 %    \end{macrocode}
-% At the end of the part, we check that the value of |pmarks| matches
+% At the end of the part, we execute some consistency checks: firstly
+% that the number of questions in the part, given by |pqs|, matches
+% the declared number stored in |\p@nqs|.
+%    \begin{macrocode}
+  \ifnum\p@nqs=\value{pqs}
+%    \end{macrocode}
+% If it is, we do nothing.  Otherwise, we print a diagnostic message
+% to the output stream, and typeset a warning about the question count
+% mismatch at the end of the part.
+%    \begin{macrocode}
+  \else
+    \if@checked
+    \typeout{gsexam warning: question mismatch in part \Alph{part}:
+      expected \p@nqs, got \arabic{pqs}}
+    \centering
+    This part has a question count mismatch: expected \textbf{\p@nqs},
+    got \textbf{\arabic{pqs}}.\par
+    \fi
+  \fi
+%    \end{macrocode}
+% Secondly, we check that the value of |pmarks| multiplied by the
+% fraction of questions the candidates are required to attempt matches
 % the declared number (stored in |\pm@rks|).
 %    \begin{macrocode}
-  \ifnum\pm@rks=\value{pmarks}
+  \ifnum\pm@rks=\numexpr \value{pmarks} * \p@nqtodos / \p@nqs\relax
 %    \end{macrocode}
 % If it is, we do nothing.  Otherwise, we print a diagnostic message
 % to the output stream, and typeset a warning about the mark count
@@ -517,10 +544,12 @@
   \else
     \if@checked
     \typeout{gsexam warning: mark mismatch in part \Alph{part}:
-      expected \pm@rks, got \arabic{pmarks}}
+      expected \pm@rks, got \the\numexpr \value{pmarks} * \p@nqtodos /
+      \p@nqs\relax}
     \centering
     This part has a mark count mismatch: expected \textbf{\pm@rks},
-    got \textbf{\arabic{pmarks}}.\par
+    got \textbf{\the\numexpr \value{pmarks} * \p@nqtodos / \p@nqs\relax}.
+    \par
     \fi
   \fi}
 %    \end{macrocode}
