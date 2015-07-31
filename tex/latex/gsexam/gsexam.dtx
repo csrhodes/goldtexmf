@@ -1,5 +1,5 @@
 % \iffalse meta-comment
-% Copyright © 2009-2012 by Christophe Rhodes
+% Copyright © 2009-2015 by Christophe Rhodes
 % Portions  © 2010 Geraint Wiggins,
 %           © 2011 Daniel Stamate
 %
@@ -25,13 +25,14 @@
 %<class>\ProvidesClass{gsexam}
 %<package>\ProvidesPackage{gsexam}
 %<*class|package>
-  [2012/01/28 v0.6 Goldsmiths Exam]
+  [2015/07/31 v1.0 Goldsmiths Exam]
 %</class|package>
 %<*driver>
 \documentclass{ltxdoc}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
+\setlength{\IndexMin}{100pt}
 \begin{document}
 \DocInput{gsexam.dtx}
 \end{document}
@@ -45,6 +46,7 @@
 % \changes{v0.5}{2010/01/29}{Improve environment support}
 % \changes{v0.6}{2013/01/28}{Incorporate new exam formats}
 % \changes{v0.7}{2013/03/06}{Fix handling of watermark in answers}
+% \changes{v1.0}{2015/07/31}{New default exam style}
 % \GetFileInfo{gsexam.dtx}
 %
 % \title{The \textsf{gsexam} package and class\thanks{This document
@@ -134,12 +136,11 @@
 % \DescribeEnv{bscexam} The |bscexam| environment encloses all of the
 % information related to a single examination paper.  The environment
 % takes a single, optional argument (currently defaulting to
-% |onepart,nocalculators|), which should be a comma-separated list of
+% |thirty,nocalculators|), which should be a comma-separated list of
 % keywords describing the exam.  The currently-accepted keywords are:
 % \begin{itemize}
-% \item |thirtycreditsonepart|: the examination is a 30-credit exam in one part;
-% \item |thirtycreditstwoparts|: the examination is a 30-credit exam in two parts;
-% \item |fifteencredits|: the examination is a 15-credit exam;
+% \item |thirty|: the examination is a 30-credit exam;
+% \item |fifteen|: the examination is a 15-credit exam;
 % \item |calculators|: calculators (though not algebraic ones) are
 %   allowed;
 % \item |nocalculators|: no calculators are allowed;
@@ -244,6 +245,16 @@
 % effect; the cover page is generated as if ``Department of
 % Computing'' had been provided as the argument to the |\subject|
 % macro.
+%
+% Prior to 2015-16, the examination style was different, and the
+% rubric generation reflected this.  The following keyword options are
+% still recognized for backwards-compatibility, but should not be used
+% in new documents.
+% \begin{itemize}
+% \item |thirtycreditsonepart|: the examination is a 30-credit exam in one part;
+% \item |thirtycreditstwoparts|: the examination is a 30-credit exam in two parts;
+% \item |fifteencredits|: the examination is a 15-credit exam;
+% \end{itemize}
 %
 % The pre-credit-framework version of this style file used the
 % following keyword options to the |bscexam| environment; while the
@@ -369,12 +380,13 @@
 %   question.  The |\qmarks| macro is responsible not only for
 %   typesetting the number of marks allocated for a part of a
 %   question, but also for incrementing the |qmarks| counter by the
-%   appropriate amount.
+%   appropriate amount (and the |pmarks| counter, defined below).
 %    \begin{macrocode}
 \newcounter{qmarks}[question]
 \newcommand{\qmarks}[1]{%
   \unskip\nobreak\hfill\rlap{\phantom{00000}\llap{[#1]}}%
-  \addtocounter{qmarks}{#1}}
+  \addtocounter{qmarks}{#1}
+  \addtocounter{pmarks}{#1}}
 %    \end{macrocode}
 % \end{macro}
 % \begin{environment}{question}
@@ -432,21 +444,85 @@
 % |qmarks| counter is the same as the declared number of marks for
 % this question (stored in |\qm@arks|)
 % \begin{macrocode}
-\ifnum\qm@rks=\value{qmarks}
+  \ifnum\qm@rks=\value{qmarks}
 %    \end{macrocode}
 % If it is, we do nothing.  Otherwise, we print a diagnostic message
 % to the output stream, and typeset a warning about the mark count
 % mismatch at the end of the question.
 %    \begin{macrocode}
-\else
-  \if@checked
-  \typeout{gsexam warning: mark mismatch in question \arabic{question}: 
-    expected \qm@rks, got \arabic{qmarks}}
-  \centering 
-  This question has a mark count mismatch: expected \textbf{\qm@rks},
-  got \textbf{\arabic{qmarks}}.\par
-  \fi
-\fi}
+  \else
+    \if@checked
+    \typeout{gsexam warning: mark mismatch in question \arabic{question}:
+      expected \qm@rks, got \arabic{qmarks}}
+    \centering
+    This question has a mark count mismatch: expected \textbf{\qm@rks},
+    got \textbf{\arabic{qmarks}}.\par
+    \fi
+  \fi}
+%    \end{macrocode}
+% \end{environment}
+% \subsubsection{The \texttt{part} environment}
+%
+% We define a |part| counter for enumerating questions.
+%    \begin{macrocode}
+\newcounter{part}
+%    \end{macrocode}
+%
+%   We define a |pmarks| counter to tally the marks allocated for each
+%   part, updated by the |\qmarks| macro, above.
+%    \begin{macrocode}
+\newcounter{pmarks}[part]
+%    \end{macrocode}
+% \begin{environment}{part}
+%   The |question| environment typesets an individual question.  It
+%   takes two arguments: an optional part title (defaulting to empty),
+%   and a mandatory number of marks, which is the number of marks in
+%   \textit{all} questions. %FIXME later
+%    \begin{macrocode}
+\newenvironment{part}[2][]{
+%    \end{macrocode}
+% We store the stated number of marks for this part in a local
+% variable.
+%    \begin{macrocode}
+  \def\pm@rks{#2}
+%    \end{macrocode}
+% We step the |part| counter, which also resets the |pmarks|
+% counter to zero
+%    \begin{macrocode}
+  \stepcounter{part}
+%    \end{macrocode}
+% The part itself is set by having a page with `Part' and the part
+% identifier in |\huge| type, and the name of the part (if given) in
+% |\Large| underneath.
+%    \begin{macrocode}
+  \clearpage
+  \vspace*{\fill}
+  \begin{center}
+    {\huge \bf Part \Alph{part}}\\
+    {\Large \bf #1}
+  \end{center}
+  \vfill
+  \clearpage}
+  {
+%    \end{macrocode}
+% At the end of the part, we check that the value of |pmarks| matches
+% the declared number (stored in |\pm@rks|).
+%    \begin{macrocode}
+  \ifnum\pm@rks=\value{pmarks}
+%    \end{macrocode}
+% If it is, we do nothing.  Otherwise, we print a diagnostic message
+% to the output stream, and typeset a warning about the mark count
+% mismatch at the end of the part.
+%    \begin{macrocode}
+  \else
+    \if@checked
+    \typeout{gsexam warning: mark mismatch in part \Alph{part}:
+      expected \pm@rks, got \arabic{pmarks}}
+    \centering
+    This part has a mark count mismatch: expected \textbf{\pm@rks},
+    got \textbf{\arabic{pmarks}}.\par
+    \fi
+  \fi}
 %    \end{macrocode}
 % \end{environment}
 % \subsubsection{The \texttt{bscexam} environment}
@@ -532,6 +608,30 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\rubric@thirty}
+% \begin{macro}{\rubric@fifteen}
+%   \changes{v1.0}{2015/07/31}{Implemented new new rubrics}
+%   The |\rubric@thirty| and |\rubric@fifteen| macros contiain the
+%   current standard rubric texts for a 30-credit exam and a 15-credit
+%   exam respectively.
+%    \begin{macrocode}
+\newcommand{\rubric@thirty}{This paper is in two parts: part A and
+  part B.  You should answer ALL questions from part A and THREE
+  questions from part B.  Part A carries 40 marks, and each question
+  from part B carries 20 marks.  The marks for each part of a question
+  are indicated at the end of the part in \textup{[.]} brackets.
+  \par
+  There are 100 marks available on this paper.}
+\newcommand{\rubric@fifteen}{This paper is in two parts:
+  part A and part B.  You should answer ALL questions from part A and TWO
+  questions from part B.  Part A carries 40 marks, and each question
+  from part B carries 30 marks.  The marks for each part of a question
+  are indicated at the end of the part in \textup{[.]} brackets.
+  \par
+  There are 100 marks available on this paper.}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
 % \begin{macro}{\rubric@thirtycreditsonepart}
 % \begin{macro}{\rubric@thirtycreditstwoparts}
 % \begin{macro}{\rubric@fifteencredits}
@@ -557,7 +657,7 @@
   for complete answers to a total of FOUR questions, TWO from part A
   and TWO from part B.  Each question carries 25 marks.  The marks for
   each part of a question are indicated at the end of the part in
-  \textup{[.]}  brackets.\par
+  \textup{[.]} brackets.\par
   There are 100 marks available on this paper.}
 \newcommand{\rubric@fifteencredits}{There are five questions in this
   paper.  You should answer no more than THREE questions.  Full marks
@@ -566,7 +666,6 @@
   question are indicated at the end of the part in \textup{[.]}
   brackets.\par
   There are 75 marks available on this paper.}
-%    \end{macrocode}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -608,16 +707,17 @@
 % \begin{environment}{bscexam}
 %   \changes{v0.3}{2009/07/22}{Added optional argument}
 %   \changes{v0.6}{2013/01/28}{New default options}
+%   \changes{v1.0}{2015/07/31}{New new default options}
 %
 %   The |bscexam| environment surrounds a number of |question|
 %   environments.  It takes a single optional argument (defaulting to
-%   |thirtycreditsonepart,nocalculators|), which should be a
-%   comma-separated list of keywords describing the kind of exam;
-%   these keywords are used to generate the rubric.  Exams not in the
-%   standard format can disable the automatic generation of a rubric,
-%   and provide one manually using the |\rubric| macro.
+%   |thirty,nocalculators|), which should be a comma-separated list of
+%   keywords describing the kind of exam; these keywords are used to
+%   generate the rubric.  Exams not in the standard format can disable
+%   the automatic generation of a rubric, and provide one manually
+%   using the |\rubric| macro.
 %    \begin{macrocode}
-\newenvironment{bscexam}[1][thirtycreditsonepart,nocalculators]{
+\newenvironment{bscexam}[1][thirty,nocalculators]{
 %    \end{macrocode}
 % At the start of the exam, we ensure that the |\@examend| boolean
 % is set to false.
@@ -645,19 +745,32 @@
   \def\rubric@calc{}
   \def\rubric@explicit{}
   \@for\opt@temp:=#1\do{
+    \def\opt@foo{thirty}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@kind{\rubric@thirty}
+    \def\@examtime{3 hours}
+    \fi
+    \def\opt@foo{fifteen}
+    \ifx\opt@temp\opt@foo
+    \def\rubric@kind{\rubric@fifteen}
+    \def\@examtime{2 hours 15 minutes}
+    \fi
     \def\opt@foo{thirtycreditsonepart}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@thirtycreditsonepart}
+    \typeout{gsexam warning: the thirtycreditsonepart option to bscexam is deprecated}
     \def\@examtime{3 hours}
     \fi
     \def\opt@foo{thirtycreditstwoparts}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@thirtycreditstwoparts}
+    \typeout{gsexam warning: the thirtycreditstwoparts option to bscexam is deprecated}
     \def\@examtime{3 hours}
     \fi
     \def\opt@foo{fifteencredits}
     \ifx\opt@temp\opt@foo
     \def\rubric@kind{\rubric@fifteencredits}
+    \typeout{gsexam warning: the fifteencredits option to bscexam is deprecated}
     \def\@examtime{2 hours 15 minutes}
     \fi
     \def\opt@foo{onepart}
