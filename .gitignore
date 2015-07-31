@@ -1,0 +1,10 @@
+comment.cut
+*.aux
+*.dvi
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.log
+*.pdf
