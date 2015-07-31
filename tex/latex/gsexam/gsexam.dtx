@@ -167,6 +167,24 @@
 % \DescribeMacro{\coverpage}|\coverpage| macro sets the cover page of
 % the exam.
 %
+% \subsection{Parts}
+%
+% \DescribeEnv{part} The |part| environment takes four arguments.  The
+% first, the title of the part, is optional (and if present is given
+% in square brackets).  The second, third, and fourth arguments are
+% mandatory, and are respectively: the number of questions in the
+% part; the number of questions that candidates should attempt; and
+% the number of marks available in that part of the exam.
+%
+% The |part| environment causes the typesetting of a clear indication
+% of the part's identity (and title, if given).  The number of
+% questions (as specified by the environment's arguments) and the
+% number of marks available are compared against the environment's
+% contents: the number of questions is simply counted, while the
+% number of marks available is tallied against the total multiplied by
+% the fraction of the number of questions that the candidates should
+% attempt.
+%
 % \subsection{Questions and answers}
 %
 % \DescribeEnv{question} The |question| environment takes two
