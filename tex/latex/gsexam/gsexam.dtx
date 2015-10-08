@@ -915,6 +915,12 @@
   \expandafter\@@end
 \fi
 %    \end{macrocode}
+% The first thing we do is set up the paper size, which will for the
+% forseeable future be A4 in portrait orientation.
+%    \begin{macrocode}
+\setlength\paperheight{297mm}
+\setlength\paperwidth{210mm}
+%    \end{macrocode}
 % \subsubsection{Class options}
 %
 % We need the |substr| package to implement our own class option
@@ -977,8 +983,6 @@
 % been processed, in order that the |\@twoside| boolean has been set
 % as the user requests.
 %    \begin{macrocode}
-\setlength\paperheight{297mm}
-\setlength\paperwidth{210mm}
 \input{size11.clo}
 \pagenumbering{arabic}
 %    \end{macrocode}
