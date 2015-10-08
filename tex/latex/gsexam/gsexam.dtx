@@ -450,6 +450,7 @@
     \typeout{gsexam warning: question mismatch in part \Alph{part}:
       expected \p@nqs, got \arabic{pqs}}
     \centering
+    \color{red}
     This part has a question count mismatch: expected \textbf{\p@nqs},
     got \textbf{\arabic{pqs}}.\par
     \fi
@@ -471,6 +472,7 @@
       expected \pm@rks, got \the\numexpr \value{pmarks} * \p@nqtodos /
       \p@nqs\relax}
     \centering
+    \color{red}
     This part has a mark count mismatch: expected \textbf{\pm@rks},
     got \textbf{\the\numexpr \value{pmarks} * \p@nqtodos / \p@nqs\relax}.
     \par
@@ -566,6 +568,7 @@
     \typeout{gsexam warning: mark mismatch in question \arabic{question}:
       expected \qm@rks, got \arabic{qmarks}}
     \centering
+    \color{red}
     This question has a mark count mismatch: expected \textbf{\qm@rks},
     got \textbf{\arabic{qmarks}}.\par
     \fi
