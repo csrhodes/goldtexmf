@@ -136,15 +136,15 @@
 % \DescribeEnv{bscexam} The |bscexam| environment encloses all of the
 % information related to a single examination paper.  The environment
 % takes a single, optional argument (currently defaulting to
-% |thirty,nocalculators|), which should be a comma-separated list of
+% |thirty|), which should be a comma-separated list of
 % keywords describing the exam.  The currently-accepted keywords are:
 % \begin{itemize}
 % \item |thirty|: the examination is a 30-credit exam;
 % \item |fifteen|: the examination is a 15-credit exam;
 % \item |calculators|: calculators (though not algebraic ones) are
 %   allowed;
-% \item |nocalculators|: no calculators are allowed;
-% \item |practical|: the examination has a practical component.
+% \item |practical|: the examination has a practical component;
+%   calculators and computers are allowed.
 % \end{itemize}
 %
 % Within the |bscexam| environment, a number of macros are used to
@@ -761,13 +761,13 @@
 %
 %   The |bscexam| environment surrounds a number of |question|
 %   environments.  It takes a single optional argument (defaulting to
-%   |thirty,nocalculators|), which should be a comma-separated list of
+%   |thirty|), which should be a comma-separated list of
 %   keywords describing the kind of exam; these keywords are used to
 %   generate the rubric.  Exams not in the standard format can disable
 %   the automatic generation of a rubric, and provide one manually
 %   using the |\rubric| macro.
 %    \begin{macrocode}
-\newenvironment{bscexam}[1][thirty,nocalculators]{
+\newenvironment{bscexam}[1][thirty]{
 %    \end{macrocode}
 % At the start of the exam, we ensure that the |\@examend| boolean
 % is set to false.
@@ -792,7 +792,7 @@
 %    \end{macrocode}
 %    \begin{macrocode}
   \def\rubric@kind{}
-  \def\rubric@calc{}
+  \def\rubric@calc{Calculators are not permitted in this examination.}
   \def\rubric@explicit{}
   \@for\opt@temp:=#1\do{
     \def\opt@foo{thirty}
@@ -843,23 +843,21 @@
     \fi
     \def\opt@foo{calculators}
     \ifx\opt@temp\opt@foo
-    \def\rubric@calc{Electronic calculators must
-      not be programmed prior to the examination.  Calculators which
-      display graphics, text or algebraic equations are not allowed.}
+    \def\rubric@calc{Calculators may be used in this examination;
+      however, calculators which display graphics, text or algebraic
+      equations are not allowed.}
     \fi 
-    \def\opt@foo{nocalculators}
-    \ifx\opt@temp\opt@foo
-    \def\rubric@calc{No calculators should be used.}
-    \fi
     \def\opt@foo{practical}
     \ifx\opt@temp\opt@foo
-    \def\rubric@calc{This is a practical examination; each answer
-      requiring code or other computational material should be named
-      according to question number, part and sub-part: for example,
-      \textup{\texttt{Q5\_b\_2.pde}} for a Processing sketch in answer
-      to part (b) sub-part (ii) of question 5.  Save your answer to
-      the exam submission folder.  You are responsible for ensuring
-      that your answers have been saved in the correct location.}
+    \def\rubric@calc{This is a practical examination; you may use the
+      computer at your desk as well as electronic calculators.  Each
+      answer requiring code or other computational material should be
+      named according to question number, part and sub-part: for
+      example, \textup{\texttt{Q5\_b\_2.pde}} for a Processing sketch
+      in answer to part (b) sub-part (ii) of question 5.  Save your
+      answer to the exam submission folder.  You are responsible for
+      ensuring that your answers have been saved in the correct
+      location.}
     \fi
   }
 %    \end{macrocode}
