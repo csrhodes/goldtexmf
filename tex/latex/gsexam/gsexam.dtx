@@ -47,6 +47,7 @@
 % \changes{v0.6}{2013/01/28}{Incorporate new exam formats}
 % \changes{v0.7}{2013/03/06}{Fix handling of watermark in answers}
 % \changes{v1.0}{2015/07/31}{New default exam style}
+% \changes{v1.1}{2017/04/28}{14pt option for large print}
 % \GetFileInfo{gsexam.dtx}
 %
 % \title{The \textsf{gsexam} package and class\thanks{This document
@@ -971,6 +972,18 @@
 \SetWatermarkScale{3.5}
 \DeclareOption{final}{\SetWatermarkText{\if@answers\textbf{ANSWERS}\fi}}
 %    \end{macrocode}
+%
+% The default font size for exams is 11pt.  Some students have
+% Reasonable Adjustments agreements in place which allow them
+% differently-formatted exam papers.  At present we support 14pt as an
+% extra size only: and for an exam typeset in 14pt we need to shrink
+% the ``END OF EXAMINATION'' text in the footer, otherwise it collides
+% with the page indicator.  \changes{v1.1}{2017/04/28}{Add 14pt class
+% option}
+%    \begin{macrocode}
+\newcommand\@ptsize{11}
+\newcommand\@examstring{EXAMINATION}
+\DeclareOption{14pt}{\renewcommand\@ptsize{14}\renewcommand\@examstring{EXAM}}
 % That's all the options, which can now be processed.
 %    \begin{macrocode}
 \ProcessOptions
@@ -984,7 +997,7 @@
 % been processed, in order that the |\@twoside| boolean has been set
 % as the user requests.
 %    \begin{macrocode}
-\input{size11.clo}
+\input{size\@ptsize.clo}
 \pagenumbering{arabic}
 %    \end{macrocode}
 %
@@ -1066,16 +1079,17 @@
 % examination; the centre contains page numbering references (in the
 % form "page m of n", in an attempt to make it very clear whether
 % there are any pages missing); and the right contains \textbf{END OF
-%   EXAMINATION} at the end of an exam, and otherwise \textbf{TURN
-%   OVER} on all right-hand pages (which is \emph{all} pages if the
-% |oneside| class option is provided).
+% EXAMINATION} (\textbf{END OF EXAM} when typeset in 14pt) at the end
+% of an exam, and otherwise \textbf{TURN OVER} on all right-hand pages
+% (which is \emph{all} pages if the |oneside| class option is
+% provided).  \changes{v1.1}{2017/04/28}{variable string for ``examination''}
 %    \begin{macrocode}
 \def\@leftmark{\makebox[0in][l]{\bfseries \@coursecode\quad\@examyear}}
 \def\o@rightmark{\makebox[0in][r]{\bfseries%
-    \if@examend END OF EXAMINATION\else TURN OVER\fi}}
+    \if@examend END OF \@examstring\else TURN OVER\fi}}
 \if@twoside
   \def\e@rightmark{\makebox[0in][r]{\bfseries%
-      \if@examend END OF EXAMINATION\fi}}
+      \if@examend END OF \@examstring\fi}}
 \else
   \def\e@rightmark\o@rightmark
 \fi
